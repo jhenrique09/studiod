@@ -4,7 +4,7 @@ class AlterarSenha extends StatefulWidget {
   const AlterarSenha({Key? key}) : super(key: key);
 
   @override
-  _AlterarSenhaState createState() => _AlterarSenhaState();
+  State<AlterarSenha> createState() => _AlterarSenhaState();
 }
 
 class _AlterarSenhaState extends State<AlterarSenha> {
@@ -33,7 +33,7 @@ class _AlterarSenhaState extends State<AlterarSenha> {
                   Navigator.of(context).pop();
                 },
                 icon: const Icon(Icons.arrow_back)),
-            title: Text("Alterar Senha"),
+            title: const Text("Alterar Senha"),
             elevation: 1,
           )),
       body: SingleChildScrollView(
@@ -119,7 +119,7 @@ class _AlterarSenhaState extends State<AlterarSenha> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 48, vertical: 12),
                         ),
-                        icon: Icon(Icons.key),
+                        icon: const Icon(Icons.key),
                         label: const Text('Alterar senha'),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {

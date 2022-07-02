@@ -8,12 +8,11 @@ class Principal extends StatefulWidget {
   const Principal({Key? key}) : super(key: key);
 
   @override
-  _PrincipalState createState() => _PrincipalState();
+  State<Principal> createState() => _PrincipalState();
 }
 
 class _PrincipalState extends State<Principal> {
   int _selectedIndex = 0;
-  String _appBarTitle = "Meus Agendamentos";
 
   static const List<Widget> _pages = <Widget>[
     MeusAgendamentos(),
@@ -24,7 +23,7 @@ class _PrincipalState extends State<Principal> {
   static const List<BottomNavigationBarItem> menuItems = [
     BottomNavigationBarItem(
       icon: Icon(Icons.schedule),
-      label: 'Meus agendamentos',
+      label: 'Agendamentos',
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.store),
@@ -35,6 +34,8 @@ class _PrincipalState extends State<Principal> {
       label: 'Meus dados',
     ),
   ];
+
+  String _appBarTitle = 'Agendamentos';
 
   void _onItemTapped(int index) {
     setState(() {
@@ -50,20 +51,18 @@ class _PrincipalState extends State<Principal> {
           preferredSize: const Size.fromHeight(48.0),
           child: AppBar(
             automaticallyImplyLeading: false,
-            title: Container(
-              child: Row(
-                children: [
-                  Image.asset(
-                    "assets/appbar_icone_black.png",
-                    width: 32,
-                    height: 32,
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Text(_appBarTitle)
-                ],
-              ),
+            title: Row(
+              children: [
+                Image.asset(
+                  "assets/appbar_icone_black.png",
+                  width: 32,
+                  height: 32,
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Text(_appBarTitle)
+              ],
             ),
             centerTitle: false,
             elevation: 1,

@@ -4,7 +4,7 @@ class Agendamento extends StatefulWidget {
   const Agendamento({Key? key}) : super(key: key);
 
   @override
-  _AgendamentoState createState() => _AgendamentoState();
+  State<Agendamento> createState() => _AgendamentoState();
 }
 
 class _AgendamentoState extends State<Agendamento> {
@@ -21,7 +21,7 @@ class _AgendamentoState extends State<Agendamento> {
                   Navigator.of(context).pop();
                 },
                 icon: const Icon(Icons.arrow_back)),
-            title: Text("Agendamento"),
+            title: const Text("Agendamento"),
             elevation: 1,
           )),
       body: SingleChildScrollView(
@@ -179,7 +179,7 @@ class _AgendamentoState extends State<Agendamento> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 48, vertical: 12),
                         ),
-                        icon: Icon(Icons.calendar_today),
+                        icon: const Icon(Icons.calendar_today),
                         label: const Text('Agendar'),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {

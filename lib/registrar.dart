@@ -7,7 +7,7 @@ class Registrar extends StatefulWidget {
   const Registrar({Key? key}) : super(key: key);
 
   @override
-  _RegistrarState createState() => _RegistrarState();
+  State<Registrar> createState() => _RegistrarState();
 }
 
 class _RegistrarState extends State<Registrar> {
