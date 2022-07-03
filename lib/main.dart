@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:material_color_generator/material_color_generator.dart';
 import 'package:studiod/principal.dart';
 
@@ -10,10 +11,13 @@ import 'registrar.dart';
 import 'saloes.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(
     MaterialApp(
         debugShowCheckedModeBanner: false,
-        initialRoute: 'principal',
+        initialRoute: 'login',
         theme: ThemeData(
             primarySwatch:
                 generateMaterialColor(color: const Color(0xffd81b60))),
