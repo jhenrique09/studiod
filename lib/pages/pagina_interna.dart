@@ -5,7 +5,6 @@ import 'package:studiod/services/api/status_resposta.dart';
 import '../services/login_service.dart';
 import 'login.dart';
 
-@optionalTypeArgs
 class PaginaInternaState<T extends StatefulWidget> extends State<T> {
   Future<bool> handleStatusResposta(
       BuildContext context, StatusResposta statusResposta) async {
