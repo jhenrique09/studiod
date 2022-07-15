@@ -1,7 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:studiod/utils.dart';
+import 'package:studiod/utils/lower_case_text_formatter.dart';
 
 class Registrar extends StatefulWidget {
   const Registrar({Key? key}) : super(key: key);

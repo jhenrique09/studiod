@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:studiod/pages/agendamento.dart';
 
 class Saloes extends StatelessWidget {
   const Saloes({Key? key}) : super(key: key);
@@ -16,7 +17,12 @@ class Saloes extends StatelessWidget {
           return Padding(
               padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 6.0),
               child: InkWell(
-                  onTap: () => {Navigator.pushNamed(context, 'agendamento')},
+                  onTap: () => {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const Agendamento()))
+                      },
                   child: Card(
                       child: Padding(
                           padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),

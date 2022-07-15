@@ -1,6 +1,8 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:studiod/utils.dart';
+import 'package:studiod/pages/principal.dart';
+import 'package:studiod/pages/registrar.dart';
+import 'package:studiod/utils/lower_case_text_formatter.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -25,7 +27,7 @@ class _LoginState extends State<Login> {
               child: Align(
                   alignment: Alignment.topCenter,
                   child: Image.asset(
-                      "assets/studiod.png",
+                    "assets/studiod.png",
                     width: 196,
                     height: 196,
                   )),
@@ -100,7 +102,10 @@ class _LoginState extends State<Login> {
                               children: [
                                 TextButton(
                                   onPressed: () {
-                                    Navigator.pushNamed(context, 'registrar');
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) => const Registrar()));
                                   },
                                   child: const Text(
                                     'Criar conta',
@@ -118,8 +123,11 @@ class _LoginState extends State<Login> {
                                     color: Colors.white,
                                     onPressed: () {
                                       if (_formKey.currentState!.validate()) {
-                                        Navigator.pushReplacementNamed(
-                                            context, 'principal');
+                                        Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (_) =>
+                                                    const Principal()));
                                       }
                                     },
                                     icon: const Icon(Icons.arrow_forward),

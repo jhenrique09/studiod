@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:studiod/pages/alterar_senha.dart';
+
+import 'login.dart';
 
 class MeusDados extends StatelessWidget {
   const MeusDados({Key? key}) : super(key: key);
@@ -9,7 +12,10 @@ class MeusDados extends StatelessWidget {
       padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 6.0),
       children: <Widget>[
         InkWell(
-            onTap: () => {Navigator.pushNamed(context, 'alterar_senha')},
+            onTap: () => {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const AlterarSenha()))
+                },
             child: const Card(
                 child: Padding(
                     padding: EdgeInsets.only(top: 0),
@@ -19,8 +25,9 @@ class MeusDados extends StatelessWidget {
                     )))),
         InkWell(
             onTap: () => {
-              Navigator.pushReplacementNamed(context, 'login')
-            },
+                  Navigator.pushReplacement(
+                      context, MaterialPageRoute(builder: (_) => const Login()))
+                },
             child: const Card(
                 child: Padding(
                     padding: EdgeInsets.only(top: 0),
