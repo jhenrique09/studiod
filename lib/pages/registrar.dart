@@ -1,7 +1,6 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:provider/provider.dart';
 import 'package:studiod/controllers/registrar_controller.dart';
 import 'package:studiod/pages/principal.dart';
 import 'package:studiod/utils/lower_case_text_formatter.dart';
@@ -166,7 +165,7 @@ class _RegistrarState extends State<Registrar> {
             color: Colors.white,
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                futureRegistrar = context.read<RegistrarController>().registrar(
+                futureRegistrar = RegistrarController().registrar(
                     nomeController.text,
                     emailController.text,
                     senhaController.text,
@@ -186,7 +185,7 @@ class _RegistrarState extends State<Registrar> {
     return WillPopScope(
       onWillPop: () {
         return Future.value(
-            futureRegistrar == null); // if true allow back else block it
+            futureRegistrar == null);
       },
       child: Scaffold(
         appBar: AppBar(

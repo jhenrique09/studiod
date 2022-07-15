@@ -1,6 +1,5 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:studiod/controllers/login_controller.dart';
 import 'package:studiod/pages/principal.dart';
 import 'package:studiod/pages/recuperar_senha.dart';
@@ -109,9 +108,7 @@ class _LoginState extends State<Login> {
                     color: Colors.white,
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        futureLogin = context
-                            .read<LoginController>()
-                            .validarLogin(
+                        futureLogin = LoginController().validarLogin(
                             emailController.text, senhaController.text);
                         setState(() {});
                       }
@@ -143,7 +140,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    futureLogin ??= context.read<LoginController>().validarLoginAtual();
+    futureLogin ??= LoginController().validarLoginAtual();
     return Scaffold(
         backgroundColor: Colors.white,
         body: SingleChildScrollView(

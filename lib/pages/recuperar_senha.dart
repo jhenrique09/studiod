@@ -2,7 +2,6 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:studiod/pages/login.dart';
 import 'package:studiod/utils/lower_case_text_formatter.dart';
-import 'package:provider/provider.dart';
 
 import '../controllers/recuperar_senha_controller.dart';
 import '../services/api/status_resposta.dart';
@@ -59,8 +58,8 @@ class _RecuperarSenhaState extends State<RecuperarSenha> {
             color: Colors.white,
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                futureRecuperarSenha = context.read<RecuperarSenhaController>().recuperarSenha(
-                    emailController.text);
+                futureRecuperarSenha = RecuperarSenhaController()
+                    .recuperarSenha(emailController.text);
                 setState(() {});
               }
             },
@@ -76,7 +75,7 @@ class _RecuperarSenhaState extends State<RecuperarSenha> {
     return WillPopScope(
       onWillPop: () {
         return Future.value(
-            futureRecuperarSenha == null); // if true allow back else block it
+            futureRecuperarSenha == null);
       },
       child: Scaffold(
         appBar: AppBar(

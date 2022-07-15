@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
@@ -9,7 +8,7 @@ import 'package:studiod/services/api/status_resposta.dart';
 GetIt sl = GetIt.instance;
 Logger logger = Logger();
 
-class LoginController with ChangeNotifier {
+class LoginController {
   FlutterSecureStorage storage = const FlutterSecureStorage();
   static const String authorizationKey = "authorization";
 

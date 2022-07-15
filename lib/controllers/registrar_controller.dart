@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
 import 'package:studiod/controllers/login_controller.dart';
@@ -10,7 +9,7 @@ import '../models/registrar.dart';
 GetIt sl = GetIt.instance;
 Logger logger = Logger();
 
-class RegistrarController with ChangeNotifier {
+class RegistrarController {
   LoginController loginController = LoginController();
 
   RegistrarController();

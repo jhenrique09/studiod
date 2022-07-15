@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:studiod/pages/alterar_senha.dart';
 
 import '../controllers/login_controller.dart';
@@ -27,7 +26,7 @@ class MeusDados extends StatelessWidget {
                     )))),
         InkWell(
             onTap: () async {
-              await context.read<LoginController>().logout();
+              await LoginController().logout();
               await Future.microtask(() => Navigator.pushReplacement(
                   context, MaterialPageRoute(builder: (_) => const Login())));
             },

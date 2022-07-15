@@ -3,10 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:material_color_generator/material_color_generator.dart';
-import 'package:provider/provider.dart';
-import 'package:studiod/controllers/login_controller.dart';
-import 'package:studiod/controllers/recuperar_senha_controller.dart';
-import 'package:studiod/controllers/registrar_controller.dart';
 import 'package:studiod/services/api/api_service.dart';
 
 import 'pages/login.dart';
@@ -29,18 +25,11 @@ void main() {
 
   sl.registerLazySingleton(() => ApiService(Dio()));
 
-  runApp(MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => LoginController()),
-        ChangeNotifierProvider(create: (_) => RegistrarController()),
-        ChangeNotifierProvider(create: (_) => RecuperarSenhaController()),
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-            useMaterial3: true,
-            primarySwatch:
-                generateMaterialColor(color: const Color(0xffd81b60))),
-        home: const Login(),
-      )));
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    theme: ThemeData(
+        useMaterial3: true,
+        primarySwatch: generateMaterialColor(color: const Color(0xffd81b60))),
+    home: const Login(),
+  ));
 }
