@@ -5,6 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:material_color_generator/material_color_generator.dart';
 import 'package:provider/provider.dart';
 import 'package:studiod/controllers/login_controller.dart';
+import 'package:studiod/controllers/recuperar_senha_controller.dart';
 import 'package:studiod/controllers/registrar_controller.dart';
 import 'package:studiod/services/api/api_service.dart';
 
@@ -32,6 +33,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => LoginController()),
         ChangeNotifierProvider(create: (_) => RegistrarController()),
+        ChangeNotifierProvider(create: (_) => RecuperarSenhaController()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

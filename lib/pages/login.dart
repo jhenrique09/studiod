@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:studiod/controllers/login_controller.dart';
 import 'package:studiod/pages/principal.dart';
+import 'package:studiod/pages/recuperar_senha.dart';
 import 'package:studiod/pages/registrar.dart';
 import 'package:studiod/utils/lower_case_text_formatter.dart';
 import 'package:studiod/widgets/loader.dart';
@@ -82,8 +83,43 @@ class _LoginState extends State<Login> {
                 },
               ),
               const SizedBox(
-                height: 40,
+                height: 10,
               ),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (_) => const RecuperarSenha()));
+                  },
+                  child: const Text(
+                    'Esqueceu a senha?',
+                    style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      fontSize: 18,
+                      color: Color(0xff4c505b),
+                    ),
+                  ),
+                ),
+              ]),
+              Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                CircleAvatar(
+                  radius: 30,
+                  backgroundColor: const Color(0xff4c505b),
+                  child: IconButton(
+                    color: Colors.white,
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        futureLogin = context
+                            .read<LoginController>()
+                            .validarLogin(
+                            emailController.text, senhaController.text);
+                        setState(() {});
+                      }
+                    },
+                    icon: const Icon(Icons.arrow_forward),
+                  ),
+                ),
+              ]),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 TextButton(
                   onPressed: () {
@@ -97,23 +133,6 @@ class _LoginState extends State<Login> {
                       fontSize: 18,
                       color: Color(0xff4c505b),
                     ),
-                  ),
-                ),
-                CircleAvatar(
-                  radius: 30,
-                  backgroundColor: const Color(0xff4c505b),
-                  child: IconButton(
-                    color: Colors.white,
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        futureLogin = context
-                            .read<LoginController>()
-                            .validarLogin(
-                                emailController.text, senhaController.text);
-                        setState(() {});
-                      }
-                    },
-                    icon: const Icon(Icons.arrow_forward),
                   ),
                 ),
               ]),

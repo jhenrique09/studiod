@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:studiod/models/login.dart';
 import 'package:studiod/models/perfil.dart';
+import 'package:studiod/models/recuperar_senha.dart';
 
 import '../../models/registrar.dart';
 
@@ -19,5 +20,8 @@ abstract class ApiService {
       @Header("Authorization") String authorization);
 
   @POST("/usuarios/registrar")
-  Future<RespostaRegistrar> registrar(@Body() Registrar login);
+  Future<RespostaRegistrar> registrar(@Body() Registrar registrar);
+
+  @POST("/usuarios/recuperarSenha")
+  Future<RespostaRecuperarSenha> recuperarSenha(@Body() RecuperarSenha recuperarSenha);
 }
