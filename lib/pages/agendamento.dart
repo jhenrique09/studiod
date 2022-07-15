@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:studiod/pages/pagina_interna.dart';
 
 class Agendamento extends StatefulWidget {
   const Agendamento({Key? key}) : super(key: key);
@@ -7,7 +8,7 @@ class Agendamento extends StatefulWidget {
   State<Agendamento> createState() => _AgendamentoState();
 }
 
-class _AgendamentoState extends State<Agendamento> {
+class _AgendamentoState extends PaginaInternaState<Agendamento> {
   final _formKey = GlobalKey<FormState>();
 
   @override

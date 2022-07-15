@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../services/alterar_senha_service.dart';
 import '../services/api/status_resposta.dart';
 import '../widgets/loader.dart';
+import 'pagina_interna.dart';
 
 class AlterarSenha extends StatefulWidget {
   const AlterarSenha({Key? key}) : super(key: key);
@@ -11,7 +12,7 @@ class AlterarSenha extends StatefulWidget {
   State<AlterarSenha> createState() => _AlterarSenhaState();
 }
 
-class _AlterarSenhaState extends State<AlterarSenha> {
+class _AlterarSenhaState extends PaginaInternaState<AlterarSenha> {
   Future<StatusResposta>? futureAlterarSenha;
   final _formKey = GlobalKey<FormState>();
 
@@ -157,10 +158,12 @@ class _AlterarSenhaState extends State<AlterarSenha> {
                     } else if (snapshot.hasError) {
                       StatusResposta resposta =
                           snapshot.error as StatusResposta;
-                      Future.microtask(() => ScaffoldMessenger.of(context)
-                          .showSnackBar(SnackBar(
-                              content: Text(resposta.mensagem),
-                              duration: const Duration(seconds: 2))));
+                      handleStatusResposta(context, resposta).then((value) {
+                        Future.microtask(() => ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(
+                                content: Text(resposta.mensagem),
+                                duration: const Duration(seconds: 2))));
+                      });
                     }
                     futureAlterarSenha = null;
                     return alterarSenhaContainer(context);

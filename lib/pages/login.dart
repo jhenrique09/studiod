@@ -1,10 +1,10 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
-import 'package:studiod/services/login_service.dart';
 import 'package:studiod/pages/principal.dart';
 import 'package:studiod/pages/recuperar_senha.dart';
 import 'package:studiod/pages/registrar.dart';
+import 'package:studiod/services/login_service.dart';
 import 'package:studiod/utils/lower_case_text_formatter.dart';
 import 'package:studiod/widgets/loader.dart';
 
@@ -174,7 +174,6 @@ class _LoginState extends State<Login> {
                           (r) => false));
                       return Loader();
                     } else if (snapshot.hasError) {
-                      if (snapshot.error is StatusResposta) {
                         StatusResposta resposta =
                             snapshot.error as StatusResposta;
                         if (resposta.codigo !=
@@ -184,13 +183,6 @@ class _LoginState extends State<Login> {
                                   content: Text(resposta.mensagem),
                                   duration: const Duration(seconds: 2))));
                         }
-                      } else {
-                        logger.e(snapshot.error);
-                        Future.microtask(() => ScaffoldMessenger.of(context)
-                            .showSnackBar(const SnackBar(
-                                content: Text("Erro desconhecido"),
-                                duration: const Duration(seconds: 2))));
-                      }
                     }
                     return loginContainer(context);
                   }
