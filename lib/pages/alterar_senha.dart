@@ -94,6 +94,11 @@ class _AlterarSenhaState extends PaginaInternaState<AlterarSenha> {
                 confirmarNovaSenhaController.clear();
                 novaSenhaFocus.requestFocus();
                 return 'As senhas não correspondem.';
+              } else if (novaSenhaController.text == senhaController.text) {
+                novaSenhaController.clear();
+                confirmarNovaSenhaController.clear();
+                novaSenhaFocus.requestFocus();
+                return 'A nova senha não pode ser igual a senha antiga.';
               }
               return null;
             },

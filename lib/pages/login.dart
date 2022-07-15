@@ -174,15 +174,16 @@ class _LoginState extends State<Login> {
                           (r) => false));
                       return Loader();
                     } else if (snapshot.hasError) {
-                        StatusResposta resposta =
-                            snapshot.error as StatusResposta;
-                        if (resposta.codigo !=
-                            StatusRespostaCodigo.TOKEN_NAO_DEFINIDO) {
-                          Future.microtask(() => ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(
-                                  content: Text(resposta.mensagem),
-                                  duration: const Duration(seconds: 2))));
-                        }
+                      senhaController.clear();
+                      StatusResposta resposta =
+                          snapshot.error as StatusResposta;
+                      if (resposta.codigo !=
+                          StatusRespostaCodigo.TOKEN_NAO_DEFINIDO) {
+                        Future.microtask(() => ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(
+                                content: Text(resposta.mensagem),
+                                duration: const Duration(seconds: 2))));
+                      }
                     }
                     return loginContainer(context);
                   }

@@ -10,8 +10,8 @@ class PaginaInternaState<T extends StatefulWidget> extends State<T> {
       BuildContext context, StatusResposta statusResposta) async {
     if (statusResposta.codigo == StatusRespostaCodigo.ERRO_NAO_AUTORIZADO) {
       await LoginService().logout();
-      await Future.microtask(() => Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (_) => const Login())));
+      await Future.microtask(() => Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const Login()), (route) => false));
       return Future.error(true);
     } else {
       return Future.value(true);
