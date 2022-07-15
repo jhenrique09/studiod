@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:studiod/pages/alterar_senha.dart';
 
+import '../controllers/login_controller.dart';
 import 'login.dart';
 
 class MeusDados extends StatelessWidget {
@@ -24,10 +26,11 @@ class MeusDados extends StatelessWidget {
                       leading: Icon(Icons.key),
                     )))),
         InkWell(
-            onTap: () => {
-                  Navigator.pushReplacement(
-                      context, MaterialPageRoute(builder: (_) => const Login()))
-                },
+            onTap: () async {
+              await context.read<LoginController>().logout();
+              await Future.microtask(() => Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (_) => const Login())));
+            },
             child: const Card(
                 child: Padding(
                     padding: EdgeInsets.only(top: 0),
