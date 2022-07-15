@@ -19,6 +19,7 @@ void main() {
         debugShowCheckedModeBanner: false,
         initialRoute: 'login',
         theme: ThemeData(
+          useMaterial3: true,
             primarySwatch:
                 generateMaterialColor(color: const Color(0xffd81b60))),
         routes: {
