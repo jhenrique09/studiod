@@ -6,13 +6,12 @@ import 'package:studiod/services/api/api_service.dart';
 import 'package:studiod/services/api/status_resposta.dart';
 
 GetIt sl = GetIt.instance;
-Logger logger = Logger();
 
-class LoginController {
+class LoginService {
   FlutterSecureStorage storage = const FlutterSecureStorage();
   static const String authorizationKey = "authorization";
 
-  LoginController();
+  LoginService();
 
   Future<StatusResposta> validarLogin(String email, String senha) async {
     return Future<StatusResposta>.delayed(const Duration(seconds: 1), () {

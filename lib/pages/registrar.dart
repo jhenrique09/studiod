@@ -1,7 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:studiod/controllers/registrar_controller.dart';
+import 'package:studiod/services/registrar_usuario_service.dart';
 import 'package:studiod/pages/principal.dart';
 import 'package:studiod/utils/lower_case_text_formatter.dart';
 
@@ -167,7 +167,7 @@ class _RegistrarState extends State<Registrar> {
             color: Colors.white,
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                futureRegistrar = RegistrarController().registrar(
+                futureRegistrar = RegistrarUsuarioService().registrar(
                     nomeController.text,
                         emailController.text,
                         senhaController.text,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../controllers/alterar_senha_controller.dart';
+import '../services/alterar_senha_service.dart';
 import '../services/api/status_resposta.dart';
 import '../widgets/loader.dart';
 
@@ -111,7 +111,7 @@ class _AlterarSenhaState extends State<AlterarSenha> {
               label: const Text('Alterar senha'),
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  futureAlterarSenha = AlterarSenhaController().atualizarSenha(
+                  futureAlterarSenha = AlterarSenhaService().atualizarSenha(
                       senhaController.text, novaSenhaController.text);
                   setState(() {});
                 }

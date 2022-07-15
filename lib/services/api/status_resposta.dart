@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
-
-import '../../controllers/login_controller.dart';
+import 'package:logger/logger.dart';
 
 class StatusResposta {
   StatusRespostaCodigo? codigo;
@@ -35,6 +34,7 @@ String obterMensagemResposta(
 }
 
 Future<StatusResposta> obterStatusRespostaErro(Object error) {
+  Logger logger = Logger();
   StatusResposta statusResposta =
       StatusResposta(StatusRespostaCodigo.ERRO_DESCONHECIDO, "");
   int codigoErro = 0;

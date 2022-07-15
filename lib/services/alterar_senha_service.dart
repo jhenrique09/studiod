@@ -1,23 +1,22 @@
 import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
-import 'package:studiod/controllers/login_controller.dart';
 import 'package:studiod/models/alterar_senha.dart';
 import 'package:studiod/services/api/api_service.dart';
 import 'package:studiod/services/api/status_resposta.dart';
+import 'package:studiod/services/login_service.dart';
 
 GetIt sl = GetIt.instance;
-Logger logger = Logger();
 
-class AlterarSenhaController {
-  LoginController loginController = LoginController();
+class AlterarSenhaService {
+  LoginService loginController = LoginService();
 
-  AlterarSenhaController();
+  AlterarSenhaService();
 
   Future<StatusResposta> atualizarSenha(
       String senhaAtual, String novaSenha) async {
     return Future<StatusResposta>.delayed(const Duration(seconds: 1), () async {
       return sl<ApiService>()
-          .atualizarSenha(await LoginController().obterToken(),
+          .atualizarSenha(await LoginService().obterToken(),
               AlterarSenha(senhaAtual, novaSenha))
           .then((value) async {
         await loginController.salvarToken(value.access_token);

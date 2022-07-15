@@ -1,18 +1,17 @@
 import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
-import 'package:studiod/controllers/login_controller.dart';
+import 'package:studiod/services/login_service.dart';
 import 'package:studiod/services/api/api_service.dart';
 import 'package:studiod/services/api/status_resposta.dart';
 
 import '../models/registrar.dart';
 
 GetIt sl = GetIt.instance;
-Logger logger = Logger();
 
-class RegistrarController {
-  LoginController loginController = LoginController();
+class RegistrarUsuarioService {
+  LoginService loginController = LoginService();
 
-  RegistrarController();
+  RegistrarUsuarioService();
 
   Future<StatusResposta> registrar(
       String nome, String email, String senha, String telefone) async {

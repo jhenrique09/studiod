@@ -1,6 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:studiod/controllers/login_controller.dart';
+import 'package:logger/logger.dart';
+import 'package:studiod/services/login_service.dart';
 import 'package:studiod/pages/principal.dart';
 import 'package:studiod/pages/recuperar_senha.dart';
 import 'package:studiod/pages/registrar.dart';
@@ -18,6 +19,7 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
+  Logger logger = Logger();
   Future<StatusResposta>? futureLogin;
 
   TextEditingController emailController = TextEditingController();
@@ -108,7 +110,7 @@ class _LoginState extends State<Login> {
                     color: Colors.white,
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        futureLogin = LoginController().validarLogin(
+                        futureLogin = LoginService().validarLogin(
                             emailController.text, senhaController.text);
                         setState(() {});
                       }
@@ -140,7 +142,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    futureLogin ??= LoginController().validarLoginAtual();
+    futureLogin ??= LoginService().validarLoginAtual();
     return Scaffold(
         backgroundColor: Colors.white,
         body: SingleChildScrollView(

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:studiod/pages/login.dart';
 import 'package:studiod/utils/lower_case_text_formatter.dart';
 
-import '../controllers/recuperar_senha_controller.dart';
+import '../services/recuperar_senha_service.dart';
 import '../services/api/status_resposta.dart';
 import '../widgets/loader.dart';
 
@@ -60,7 +60,7 @@ class _RecuperarSenhaState extends State<RecuperarSenha> {
             color: Colors.white,
             onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    futureRecuperarSenha = RecuperarSenhaController()
+                    futureRecuperarSenha = RecuperarSenhaService()
                         .recuperarSenha(emailController.text);
                     setState(() {});
                   }
