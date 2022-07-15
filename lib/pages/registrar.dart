@@ -33,18 +33,20 @@ class _RegistrarState extends State<Registrar> {
   }
 
   Widget registrarContainer(BuildContext context) {
-    return Column(children: [
-      TextFormField(
-        textCapitalization: TextCapitalization.words,
-        autocorrect: false,
-        enableSuggestions: false,
-        decoration: InputDecoration(
-          fillColor: Colors.grey.shade100,
-          filled: true,
-          hintText: 'Nome Completo',
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
+    return Form(
+        key: _formKey,
+        child: Column(children: [
+          TextFormField(
+            textCapitalization: TextCapitalization.words,
+            autocorrect: false,
+            enableSuggestions: false,
+            decoration: InputDecoration(
+              fillColor: Colors.grey.shade100,
+              filled: true,
+              hintText: 'Nome Completo',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
         ),
         controller: nomeController,
         validator: (value) {
@@ -167,17 +169,17 @@ class _RegistrarState extends State<Registrar> {
               if (_formKey.currentState!.validate()) {
                 futureRegistrar = RegistrarController().registrar(
                     nomeController.text,
-                    emailController.text,
-                    senhaController.text,
-                    celularController.text.replaceAll(RegExp(r"\D"), ""));
-                setState(() {});
-              }
-            },
-            icon: const Icon(Icons.arrow_forward),
-          ),
-        ),
-      ]),
-    ]);
+                        emailController.text,
+                        senhaController.text,
+                        celularController.text.replaceAll(RegExp(r"\D"), ""));
+                    setState(() {});
+                  }
+                },
+                icon: const Icon(Icons.arrow_forward),
+              ),
+            ),
+          ]),
+        ]));
   }
 
   @override
@@ -213,20 +215,18 @@ class _RegistrarState extends State<Registrar> {
             ),
             Container(
                 padding: const EdgeInsets.all(36),
-                child: Form(
-                  key: _formKey,
-                  child: FutureBuilder<StatusResposta>(
-                    future: futureRegistrar,
-                    builder: (BuildContext context,
-                        AsyncSnapshot<StatusResposta> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Loader();
-                      } else {
-                        if (snapshot.hasData) {
-                          Future.delayed(const Duration(seconds: 3), () {
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
+              child: FutureBuilder<StatusResposta>(
+                future: futureRegistrar,
+                builder: (BuildContext context,
+                    AsyncSnapshot<StatusResposta> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Loader();
+                  } else {
+                    if (snapshot.hasData) {
+                      Future.delayed(const Duration(seconds: 3), () {
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
                                     builder: (_) => const Principal()),
                                 (r) => false);
                           });
@@ -238,18 +238,19 @@ class _RegistrarState extends State<Registrar> {
                               )));
                           return Loader();
                         } else if (snapshot.hasError) {
-                          StatusResposta resposta =
-                              snapshot.error as StatusResposta;
-                          Future.microtask(() => ScaffoldMessenger.of(context)
-                              .showSnackBar(
-                                  SnackBar(content: Text(resposta.mensagem))));
-                        }
-                        futureRegistrar = null;
-                        return registrarContainer(context);
-                      }
-                    },
-                  ),
-                )),
+                      StatusResposta resposta =
+                          snapshot.error as StatusResposta;
+                      Future.microtask(() => ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(
+                              content: Text(resposta.mensagem),
+                              duration: const Duration(seconds: 2))));
+                    }
+                    futureRegistrar = null;
+                    return registrarContainer(context);
+                  }
+                },
+              ),
+            ),
           ]),
         ),
       ),

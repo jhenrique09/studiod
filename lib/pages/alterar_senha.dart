@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../controllers/alterar_senha_controller.dart';
+import '../services/api/status_resposta.dart';
+import '../widgets/loader.dart';
+
 class AlterarSenha extends StatefulWidget {
   const AlterarSenha({Key? key}) : super(key: key);
 
@@ -8,6 +12,7 @@ class AlterarSenha extends StatefulWidget {
 }
 
 class _AlterarSenhaState extends State<AlterarSenha> {
+  Future<StatusResposta>? futureAlterarSenha;
   final _formKey = GlobalKey<FormState>();
 
   late FocusNode novaSenhaFocus;
@@ -20,6 +25,100 @@ class _AlterarSenhaState extends State<AlterarSenha> {
     super.initState();
 
     novaSenhaFocus = FocusNode();
+  }
+
+  Widget alterarSenhaContainer(BuildContext context) {
+    return Form(
+        key: _formKey,
+        child: Column(children: [
+          TextFormField(
+            obscureText: true,
+            decoration: InputDecoration(
+              filled: true,
+              hintText: 'Senha atual',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            controller: senhaController,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Informe a senha atual.';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+          TextFormField(
+            obscureText: true,
+            focusNode: novaSenhaFocus,
+            decoration: InputDecoration(
+              filled: true,
+              hintText: 'Nova senha',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            controller: novaSenhaController,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Informe a nova senha.';
+              } else if (value.length < 6) {
+                return 'A nova senha deve conter no mínimo 6 caracteres.';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+          TextFormField(
+            obscureText: true,
+            decoration: InputDecoration(
+              filled: true,
+              hintText: 'Confirmar nova senha',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            controller: confirmarNovaSenhaController,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Confirme a nova senha.';
+              } else if (novaSenhaController.text !=
+                  confirmarNovaSenhaController.text) {
+                novaSenhaController.clear();
+                confirmarNovaSenhaController.clear();
+                novaSenhaFocus.requestFocus();
+                return 'As senhas não correspondem.';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                shape: const StadiumBorder(),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 48, vertical: 12),
+              ),
+              icon: const Icon(Icons.key),
+              label: const Text('Alterar senha'),
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  futureAlterarSenha = AlterarSenhaController().atualizarSenha(
+                      senhaController.text, novaSenhaController.text);
+                  setState(() {});
+                }
+              },
+            ),
+          ]),
+        ]));
   }
 
   @override
@@ -40,95 +139,34 @@ class _AlterarSenhaState extends State<AlterarSenha> {
         child: Column(children: [
           Container(
               padding: const EdgeInsets.all(36),
-              child: Form(
-                  key: _formKey,
-                  child: Column(children: [
-                    TextFormField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        filled: true,
-                        hintText: 'Senha atual',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      controller: senhaController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Informe a senha atual.';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    TextFormField(
-                      obscureText: true,
-                      focusNode: novaSenhaFocus,
-                      decoration: InputDecoration(
-                        filled: true,
-                        hintText: 'Nova senha',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      controller: novaSenhaController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Informe a nova senha.';
-                        } else if (value.length < 6) {
-                          return 'A nova senha deve conter no mínimo 6 caracteres.';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    TextFormField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        filled: true,
-                        hintText: 'Confirmar nova senha',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      controller: confirmarNovaSenhaController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Confirme a nova senha.';
-                        } else if (novaSenhaController.text !=
-                            confirmarNovaSenhaController.text) {
-                          novaSenhaController.clear();
-                          confirmarNovaSenhaController.clear();
-                          novaSenhaFocus.requestFocus();
-                          return 'As senhas não correspondem.';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          shape: const StadiumBorder(),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 48, vertical: 12),
-                        ),
-                        icon: const Icon(Icons.key),
-                        label: const Text('Alterar senha'),
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            // TODO
-                          }
-                        },
-                      ),
-                    ]),
-                  ])))
+              child: FutureBuilder<StatusResposta>(
+                future: futureAlterarSenha,
+                builder: (BuildContext context,
+                    AsyncSnapshot<StatusResposta> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Loader();
+                  } else {
+                    if (snapshot.hasData) {
+                      Future.microtask(() => Navigator.of(context).pop());
+                      Future.microtask(() => ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Text("Senha atualizada com sucesso."),
+                            duration: Duration(seconds: 2),
+                          )));
+                      return Loader();
+                    } else if (snapshot.hasError) {
+                      StatusResposta resposta =
+                          snapshot.error as StatusResposta;
+                      Future.microtask(() => ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(
+                              content: Text(resposta.mensagem),
+                              duration: const Duration(seconds: 2))));
+                    }
+                    futureAlterarSenha = null;
+                    return alterarSenhaContainer(context);
+                  }
+                },
+              ))
         ]),
       ),
     );

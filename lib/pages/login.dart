@@ -178,14 +178,16 @@ class _LoginState extends State<Login> {
                         if (resposta.codigo !=
                             StatusRespostaCodigo.TOKEN_NAO_DEFINIDO) {
                           Future.microtask(() => ScaffoldMessenger.of(context)
-                              .showSnackBar(
-                                  SnackBar(content: Text(resposta.mensagem))));
+                              .showSnackBar(SnackBar(
+                                  content: Text(resposta.mensagem),
+                                  duration: const Duration(seconds: 2))));
                         }
                       } else {
                         logger.e(snapshot.error);
                         Future.microtask(() => ScaffoldMessenger.of(context)
                             .showSnackBar(const SnackBar(
-                                content: Text("Erro desconhecido"))));
+                                content: Text("Erro desconhecido"),
+                                duration: const Duration(seconds: 2))));
                       }
                     }
                     return loginContainer(context);

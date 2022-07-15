@@ -24,19 +24,21 @@ class _RecuperarSenhaState extends State<RecuperarSenha> {
     super.initState();
   }
 
-  Widget RecuperarSenhaContainer(BuildContext context) {
-    return Column(children: [
-      TextFormField(
-        keyboardType: TextInputType.emailAddress,
-        inputFormatters: [LowerCaseTextFormatter()],
-        decoration: InputDecoration(
-          fillColor: Colors.grey.shade100,
-          filled: true,
-          hintText: 'Email',
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
+  Widget recuperarSenhaContainer(BuildContext context) {
+    return Form(
+        key: _formKey,
+        child: Column(children: [
+          TextFormField(
+            keyboardType: TextInputType.emailAddress,
+            inputFormatters: [LowerCaseTextFormatter()],
+            decoration: InputDecoration(
+              fillColor: Colors.grey.shade100,
+              filled: true,
+              hintText: 'Email',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
         controller: emailController,
         validator: (value) {
           if (value == null ||
@@ -57,17 +59,17 @@ class _RecuperarSenhaState extends State<RecuperarSenha> {
           child: IconButton(
             color: Colors.white,
             onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                futureRecuperarSenha = RecuperarSenhaController()
-                    .recuperarSenha(emailController.text);
-                setState(() {});
-              }
-            },
-            icon: const Icon(Icons.arrow_forward),
-          ),
-        ),
-      ]),
-    ]);
+                  if (_formKey.currentState!.validate()) {
+                    futureRecuperarSenha = RecuperarSenhaController()
+                        .recuperarSenha(emailController.text);
+                    setState(() {});
+                  }
+                },
+                icon: const Icon(Icons.arrow_forward),
+              ),
+            ),
+          ]),
+        ]));
   }
 
   @override
@@ -103,20 +105,17 @@ class _RecuperarSenhaState extends State<RecuperarSenha> {
             ),
             Container(
                 padding: const EdgeInsets.all(36),
-                child: Form(
-                  key: _formKey,
-                  child: FutureBuilder<StatusResposta>(
-                    future: futureRecuperarSenha,
-                    builder: (BuildContext context,
-                        AsyncSnapshot<StatusResposta> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Loader();
-                      } else {
-                        if (snapshot.hasData) {
-                          Future.microtask(() =>
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
+              child: FutureBuilder<StatusResposta>(
+                future: futureRecuperarSenha,
+                builder: (BuildContext context,
+                    AsyncSnapshot<StatusResposta> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Loader();
+                  } else {
+                    if (snapshot.hasData) {
+                      Future.microtask(() => Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
                                     builder: (_) => const Login()),
                                 (r) => false)
                           );
@@ -128,18 +127,19 @@ class _RecuperarSenhaState extends State<RecuperarSenha> {
                               )));
                           return Loader();
                         } else if (snapshot.hasError) {
-                          StatusResposta resposta =
-                              snapshot.error as StatusResposta;
-                          Future.microtask(() => ScaffoldMessenger.of(context)
-                              .showSnackBar(
-                                  SnackBar(content: Text(resposta.mensagem))));
-                        }
-                        futureRecuperarSenha = null;
-                        return RecuperarSenhaContainer(context);
-                      }
-                    },
-                  ),
-                )),
+                      StatusResposta resposta =
+                          snapshot.error as StatusResposta;
+                      Future.microtask(() => ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(
+                              content: Text(resposta.mensagem),
+                              duration: const Duration(seconds: 2))));
+                    }
+                    futureRecuperarSenha = null;
+                    return recuperarSenhaContainer(context);
+                  }
+                },
+              ),
+            ),
           ]),
         ),
       ),
