@@ -27,8 +27,10 @@ void main() {
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
   sl.registerLazySingleton(() => ApiService(Dio(BaseOptions(
-    baseUrl: getApiBaseUrl()
-  ))));
+      baseUrl: getApiBaseUrl(),
+      connectTimeout: 10000,
+      sendTimeout: 10000,
+      receiveTimeout: 20000))));
 
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,

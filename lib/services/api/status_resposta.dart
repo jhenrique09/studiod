@@ -4,8 +4,9 @@ import 'package:logger/logger.dart';
 class StatusResposta {
   StatusRespostaCodigo codigo = StatusRespostaCodigo.OK;
   String mensagem = "";
+  Acao acao;
 
-  StatusResposta(this.codigo, this.mensagem);
+  StatusResposta(this.codigo, this.mensagem, this.acao);
 }
 
 enum StatusRespostaCodigo {
@@ -15,8 +16,25 @@ enum StatusRespostaCodigo {
   ERRO_DESCONHECIDO,
   ERRO_INTERNO_SERVIDOR,
   ERRO_NAO_AUTORIZADO,
-  TOKEN_NAO_DEFINIDO,
-  REQUISICAO_INVALIDA,
+  ERRO_TOKEN_NAO_DEFINIDO,
+  ERRO_REQUISICAO_INVALIDA,
+  ERRO_SEM_CONEXAO,
+}
+
+enum Acao {
+  LOGIN,
+  LOGIN_JWT,
+  REGISTRAR,
+  ALTERAR_SENHA,
+  RECUPERAR_SENHA,
+}
+
+class MensagensErro {
+  static String ERRO_INTERNO_SERVIDOR = "Erro interno do servidor.";
+  static String ERRO_REQUISICAO_INVALIDA = "Requisição inválida.";
+  static String ERRO_NAO_AUTORIZADO = "E-mail ou senha inválidos.";
+  static String ERRO_SEM_CONEXAO = "Sem conexão com a internet.";
+  static String ERRO_DESCONHECIDO = "Ocorreu um erro ao efetuar a operação.";
 }
 
 String obterMensagemResposta(
@@ -25,26 +43,29 @@ String obterMensagemResposta(
     case StatusRespostaCodigo.OK:
       return "Ok.";
     case StatusRespostaCodigo.ERRO_INTERNO_SERVIDOR:
-      return mensagemApi ?? "Erro interno do servidor.";
-    case StatusRespostaCodigo.REQUISICAO_INVALIDA:
-      return mensagemApi ?? "Requisição inválida.";
+      return mensagemApi ?? MensagensErro.ERRO_INTERNO_SERVIDOR;
+    case StatusRespostaCodigo.ERRO_REQUISICAO_INVALIDA:
+      return mensagemApi ?? MensagensErro.ERRO_REQUISICAO_INVALIDA;
     case StatusRespostaCodigo.ERRO_NAO_AUTORIZADO:
-      return "E-mail ou senha inválidos.";
-    case StatusRespostaCodigo.TOKEN_NAO_DEFINIDO:
+      return MensagensErro.ERRO_NAO_AUTORIZADO;
+    case StatusRespostaCodigo.ERRO_SEM_CONEXAO:
+      return MensagensErro.ERRO_SEM_CONEXAO;
+    case StatusRespostaCodigo.ERRO_TOKEN_NAO_DEFINIDO:
     case StatusRespostaCodigo.AUTENTICADO:
     case StatusRespostaCodigo.AUTENTICADO_SENHA_PROVISORIA:
       return "";
     default:
-      return "Ocorreu um erro ao efetuar a operação.";
+      return MensagensErro.ERRO_DESCONHECIDO;
   }
 }
 
-Future<StatusResposta> obterStatusRespostaErro(Object error) {
+Future<StatusResposta> obterStatusRespostaErro(Object error, Acao acao) async {
   Logger logger = Logger();
   StatusResposta statusResposta =
-      StatusResposta(StatusRespostaCodigo.ERRO_DESCONHECIDO, "");
-  int codigoErro = 0;
+      StatusResposta(StatusRespostaCodigo.ERRO_DESCONHECIDO, "", acao);
   String? mensagem;
+  logger.e(error);
+  int codigoErro = 0;
   switch (error.runtimeType) {
     case DioError:
       final res = (error as DioError).response;
@@ -62,7 +83,7 @@ Future<StatusResposta> obterStatusRespostaErro(Object error) {
       }
 
       if (codigoErro == 400 || res?.statusCode == 400) {
-        statusResposta.codigo = StatusRespostaCodigo.REQUISICAO_INVALIDA;
+        statusResposta.codigo = StatusRespostaCodigo.ERRO_REQUISICAO_INVALIDA;
       } else if (codigoErro == 401 || res?.statusCode == 401) {
         statusResposta.codigo = StatusRespostaCodigo.ERRO_NAO_AUTORIZADO;
       } else if (codigoErro == 500 || res?.statusCode == 500) {

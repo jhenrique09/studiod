@@ -4,6 +4,8 @@ import 'package:studiod/models/login.dart';
 import 'package:studiod/services/api/api_service.dart';
 import 'package:studiod/services/api/status_resposta.dart';
 
+import '../utils/utils.dart';
+
 GetIt sl = GetIt.instance;
 
 class LoginService {
@@ -14,20 +16,25 @@ class LoginService {
   LoginService();
 
   Future<StatusResposta> validarLogin(String email, String senha) async {
-    return Future<StatusResposta>.delayed(const Duration(seconds: 1), () {
+    return Future<StatusResposta>.delayed(const Duration(seconds: 1), () async {
+      if (!await verificarConexao()) {
+        return obterErroSemConexao(Acao.LOGIN);
+      }
       return sl<ApiService>()
           .autenticar(Login(email, senha))
           .then((value) async {
         await salvarToken(value.access_token);
-        if (value.requer_atualizacao_senha){
+        if (value.requer_atualizacao_senha) {
           await salvarSenhaTemporaria(senha);
           return StatusResposta(
-              StatusRespostaCodigo.AUTENTICADO_SENHA_PROVISORIA, "Autenticado com sucesso com senha provisória.");
+              StatusRespostaCodigo.AUTENTICADO_SENHA_PROVISORIA,
+              "Autenticado com sucesso com senha provisória.",
+              Acao.LOGIN);
         }
-        return StatusResposta(
-            StatusRespostaCodigo.AUTENTICADO, "Autenticado com sucesso.");
+        return StatusResposta(StatusRespostaCodigo.AUTENTICADO,
+            "Autenticado com sucesso.", Acao.LOGIN);
       }).catchError((Object error) {
-        return obterStatusRespostaErro(error);
+        return obterStatusRespostaErro(error, Acao.LOGIN);
       });
     });
   }
@@ -37,22 +44,25 @@ class LoginService {
       if (await obterSenhaTemporaria() != null) {
         await logout();
       }
+      if (!await verificarConexao()) {
+        return obterErroSemConexao(Acao.LOGIN_JWT);
+      }
       String? authorization = await obterToken();
       if (authorization == null) {
-        return Future<StatusResposta>.error(
-            StatusResposta(StatusRespostaCodigo.TOKEN_NAO_DEFINIDO, ""));
+        return Future<StatusResposta>.error(StatusResposta(
+            StatusRespostaCodigo.ERRO_TOKEN_NAO_DEFINIDO, "", Acao.LOGIN_JWT));
       }
       return sl<ApiService>().obterPerfil(authorization).then((value) async {
         if (value.requer_atualizacao_senha) {
           await logout();
           return StatusResposta(StatusRespostaCodigo.ERRO_NAO_AUTORIZADO,
-              "Atualização de senha necessária.");
+              "Atualização de senha necessária.", Acao.LOGIN_JWT);
         }
-        return StatusResposta(
-            StatusRespostaCodigo.AUTENTICADO, "Perfil obtido com sucesso");
+        return StatusResposta(StatusRespostaCodigo.AUTENTICADO,
+            "Perfil obtido com sucesso", Acao.LOGIN_JWT);
       }).catchError((Object error) async {
         await logout();
-        return obterStatusRespostaErro(error);
+        return obterStatusRespostaErro(error, Acao.LOGIN_JWT);
       });
     });
   }

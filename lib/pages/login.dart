@@ -26,12 +26,48 @@ class _LoginState extends State<Login> {
   TextEditingController emailController = TextEditingController();
   TextEditingController senhaController = TextEditingController();
 
-  void efetuarLogin(){
+  void efetuarLogin() {
     if (_formKey.currentState!.validate()) {
-      futureLogin = LoginService().validarLogin(
-          emailController.text, senhaController.text);
+      futureLogin = LoginService()
+          .validarLogin(emailController.text, senhaController.text);
       setState(() {});
     }
+  }
+
+  Widget semConexaoContainer(
+      BuildContext context, VoidCallback? acaoTentarNovamente) {
+    return Container(
+        child: Column(
+      children: [
+        const Icon(
+          Icons.wifi_off,
+          size: 32.0,
+          semanticLabel: 'Text to announce in accessibility modes',
+        ),
+        const Text(
+          'Sem conexão com a internet',
+          style: TextStyle(
+            color: Color(0xff4c505b),
+            fontSize: 15,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const Center(
+          child: Text(
+              'Não foi possivel carregar a página pois não existe sinal de rede. Verifique sua conexão e tente novamente.',
+              style: TextStyle(
+                color: Color(0xff4c505b),
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.center),
+        ),
+        TextButton(
+          onPressed: acaoTentarNovamente,
+          child: Text("TENTAR NOVAMENTE"),
+        )
+      ],
+    ));
   }
 
   Widget loginContainer(BuildContext context) {
@@ -206,11 +242,20 @@ class _LoginState extends State<Login> {
 
                       return Loader();
                     } else if (snapshot.hasError) {
-                      senhaController.clear();
                       StatusResposta resposta =
                           snapshot.error as StatusResposta;
+
+                      if (resposta.codigo ==
+                              StatusRespostaCodigo.ERRO_SEM_CONEXAO &&
+                          resposta.acao == Acao.LOGIN_JWT) {
+                        return semConexaoContainer(context, () {
+                          futureLogin = LoginService().validarLoginAtual();
+                          setState(() {});
+                        });
+                      }
+                      senhaController.clear();
                       if (resposta.codigo !=
-                          StatusRespostaCodigo.TOKEN_NAO_DEFINIDO) {
+                          StatusRespostaCodigo.ERRO_TOKEN_NAO_DEFINIDO) {
                         Future.microtask(() => ScaffoldMessenger.of(context)
                             .showSnackBar(SnackBar(
                                 content: Text(resposta.mensagem),
