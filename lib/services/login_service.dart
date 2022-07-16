@@ -1,6 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
-import 'package:logger/logger.dart';
 import 'package:studiod/models/login.dart';
 import 'package:studiod/services/api/api_service.dart';
 import 'package:studiod/services/api/status_resposta.dart';
@@ -35,19 +34,22 @@ class LoginService {
 
   Future<StatusResposta> validarLoginAtual() async {
     return Future<StatusResposta>.delayed(const Duration(seconds: 1), () async {
+      if (await obterSenhaTemporaria() != null) {
+        await logout();
+      }
       String? authorization = await obterToken();
       if (authorization == null) {
         return Future<StatusResposta>.error(
             StatusResposta(StatusRespostaCodigo.TOKEN_NAO_DEFINIDO, ""));
       }
       return sl<ApiService>().obterPerfil(authorization).then((value) async {
-        if (await obterSenhaTemporaria() == null) {
-          return StatusResposta(
-              StatusRespostaCodigo.AUTENTICADO, "Perfil obtido com sucesso");
-        }else{
-          return StatusResposta(
-              StatusRespostaCodigo.AUTENTICADO_SENHA_PROVISORIA, "Perfil obtido com sucesso");
+        if (value.requer_atualizacao_senha) {
+          await logout();
+          return StatusResposta(StatusRespostaCodigo.ERRO_NAO_AUTORIZADO,
+              "Atualização de senha necessária.");
         }
+        return StatusResposta(
+            StatusRespostaCodigo.AUTENTICADO, "Perfil obtido com sucesso");
       }).catchError((Object error) async {
         await logout();
         return obterStatusRespostaErro(error);
