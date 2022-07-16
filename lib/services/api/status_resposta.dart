@@ -10,6 +10,8 @@ class StatusResposta {
 
 enum StatusRespostaCodigo {
   OK,
+  AUTENTICADO,
+  AUTENTICADO_SENHA_PROVISORIA,
   ERRO_DESCONHECIDO,
   ERRO_INTERNO_SERVIDOR,
   ERRO_NAO_AUTORIZADO,
@@ -27,7 +29,11 @@ String obterMensagemResposta(
     case StatusRespostaCodigo.REQUISICAO_INVALIDA:
       return mensagemApi ?? "Requisição inválida.";
     case StatusRespostaCodigo.ERRO_NAO_AUTORIZADO:
-      return "Email ou senha inválida.";
+      return "E-mail ou senha inválidos.";
+    case StatusRespostaCodigo.TOKEN_NAO_DEFINIDO:
+    case StatusRespostaCodigo.AUTENTICADO:
+    case StatusRespostaCodigo.AUTENTICADO_SENHA_PROVISORIA:
+      return "";
     default:
       return "Ocorreu um erro ao efetuar a operação.";
   }

@@ -9,7 +9,7 @@ import '../models/registrar.dart';
 GetIt sl = GetIt.instance;
 
 class RegistrarUsuarioService {
-  LoginService loginController = LoginService();
+  LoginService loginService = LoginService();
 
   RegistrarUsuarioService();
 
@@ -19,7 +19,7 @@ class RegistrarUsuarioService {
       return sl<ApiService>()
           .registrar(Registrar(nome, email, senha, telefone))
           .then((value) async {
-        await loginController.salvarToken(value.access_token);
+        await loginService.salvarToken(value.access_token);
         return StatusResposta(
             StatusRespostaCodigo.OK, "Registrado com sucesso.");
       }).catchError((Object error) {

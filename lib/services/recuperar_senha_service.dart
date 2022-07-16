@@ -10,7 +10,6 @@ import '../models/recuperar_senha.dart';
 GetIt sl = GetIt.instance;
 
 class RecuperarSenhaService {
-  LoginService loginController = LoginService();
 
   RecuperarSenhaService();
 

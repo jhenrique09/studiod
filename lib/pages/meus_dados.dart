@@ -14,8 +14,10 @@ class MeusDados extends StatelessWidget {
       children: <Widget>[
         InkWell(
             onTap: () => {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => const AlterarSenha()))
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => AlterarSenha(senhaTemporaria: false)))
                 },
             child: const Card(
                 child: Padding(

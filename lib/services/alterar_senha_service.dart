@@ -8,18 +8,19 @@ import 'package:studiod/services/login_service.dart';
 GetIt sl = GetIt.instance;
 
 class AlterarSenhaService {
-  LoginService loginController = LoginService();
+  LoginService loginService = LoginService();
 
   AlterarSenhaService();
 
   Future<StatusResposta> atualizarSenha(
-      String senhaAtual, String novaSenha) async {
+      String? senhaAtual, String novaSenha) async {
     return Future<StatusResposta>.delayed(const Duration(seconds: 1), () async {
+      String senhatemp = await loginService.obterSenhaTemporaria();
       return sl<ApiService>()
           .atualizarSenha(await LoginService().obterToken(),
-              AlterarSenha(senhaAtual, novaSenha))
+              AlterarSenha(senhaAtual ?? senhatemp, novaSenha))
           .then((value) async {
-        await loginController.salvarToken(value.access_token);
+        await loginService.salvarToken(value.access_token);
         return StatusResposta(
             StatusRespostaCodigo.OK, "Senha atualizada com sucesso.");
       }).catchError((Object error) {

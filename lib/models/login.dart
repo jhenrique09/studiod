@@ -19,11 +19,13 @@ class RespostaLogin {
   int statusCode;
   String message;
   String access_token;
+  bool requer_atualizacao_senha;
 
   RespostaLogin(
       {required this.statusCode,
       required this.message,
-      required this.access_token});
+      required this.access_token,
+      required this.requer_atualizacao_senha});
 
   factory RespostaLogin.fromJson(Map<String, dynamic> json) =>
       _$RespostaLoginFromJson(json);

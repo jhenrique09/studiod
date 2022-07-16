@@ -1,6 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:studiod/pages/alterar_senha.dart';
 import 'package:studiod/pages/principal.dart';
 import 'package:studiod/pages/recuperar_senha.dart';
 import 'package:studiod/pages/registrar.dart';
@@ -66,6 +67,7 @@ class _LoginState extends State<Login> {
                 height: 30,
               ),
               TextFormField(
+                enableInteractiveSelection: true,
                 obscureText: true,
                 decoration: InputDecoration(
                   fillColor: Colors.grey.shade100,
@@ -168,10 +170,30 @@ class _LoginState extends State<Login> {
                     return Loader();
                   } else {
                     if (snapshot.hasData) {
-                      Future.microtask(() => Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (_) => const Principal()),
-                          (r) => false));
+                      if (snapshot.data?.codigo ==
+                          StatusRespostaCodigo.AUTENTICADO_SENHA_PROVISORIA) {
+                        Future.microtask(() {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Text(
+                                "É necessário alterar a senha para acessar o aplicativo."),
+                            duration: Duration(seconds: 4),
+                          ));
+                        });
+                        Future.microtask(() => Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) =>
+                                    AlterarSenha(senhaTemporaria: true)),
+                            (r) => false));
+                      } else {
+                        Future.microtask(() => Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const Principal()),
+                            (r) => false));
+                      }
+
                       return Loader();
                     } else if (snapshot.hasError) {
                       senhaController.clear();
