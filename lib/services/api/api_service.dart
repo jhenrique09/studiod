@@ -9,7 +9,7 @@ import '../../models/registrar.dart';
 
 part 'api_service.g.dart';
 
-@RestApi(baseUrl: "http://10.9.9.11:3000/v1/")
+@RestApi()
 abstract class ApiService {
   factory ApiService(Dio dio, {String baseUrl}) = _ApiService;
 

@@ -9,9 +9,7 @@ part of 'api_service.dart';
 // ignore_for_file: unnecessary_brace_in_string_interps
 
 class _ApiService implements ApiService {
-  _ApiService(this._dio, {this.baseUrl}) {
-    baseUrl ??= 'http://10.9.9.11:3000/v1/';
-  }
+  _ApiService(this._dio, {this.baseUrl});
 
   final Dio _dio;
 

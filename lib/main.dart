@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:material_color_generator/material_color_generator.dart';
 import 'package:studiod/services/api/api_service.dart';
+import 'package:studiod/utils/utils.dart';
 
 import 'pages/login.dart';
 
@@ -25,7 +26,9 @@ void main() {
 
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
-  sl.registerLazySingleton(() => ApiService(Dio()));
+  sl.registerLazySingleton(() => ApiService(Dio(BaseOptions(
+    baseUrl: getApiBaseUrl()
+  ))));
 
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
