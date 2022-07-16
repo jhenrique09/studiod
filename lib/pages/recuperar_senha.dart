@@ -31,6 +31,9 @@ class _RecuperarSenhaState extends State<RecuperarSenha> {
           TextFormField(
             keyboardType: TextInputType.emailAddress,
             inputFormatters: [LowerCaseTextFormatter()],
+            onFieldSubmitted: (value) {
+              recuperarSenha();
+            },
             decoration: InputDecoration(
               fillColor: Colors.grey.shade100,
               filled: true,
@@ -59,11 +62,7 @@ class _RecuperarSenhaState extends State<RecuperarSenha> {
           child: IconButton(
             color: Colors.white,
             onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    futureRecuperarSenha = RecuperarSenhaService()
-                        .recuperarSenha(emailController.text);
-                    setState(() {});
-                  }
+              recuperarSenha();
                 },
                 icon: const Icon(Icons.arrow_forward),
               ),
@@ -144,5 +143,13 @@ class _RecuperarSenhaState extends State<RecuperarSenha> {
         ),
       ),
     );
+  }
+
+  void recuperarSenha() {
+    if (_formKey.currentState!.validate()) {
+      futureRecuperarSenha = RecuperarSenhaService()
+          .recuperarSenha(emailController.text);
+      setState(() {});
+    }
   }
 }

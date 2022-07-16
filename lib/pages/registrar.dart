@@ -40,6 +40,9 @@ class _RegistrarState extends State<Registrar> {
             textCapitalization: TextCapitalization.words,
             autocorrect: false,
             enableSuggestions: false,
+            onFieldSubmitted: (value) {
+              registrar();
+            },
             decoration: InputDecoration(
               fillColor: Colors.grey.shade100,
               filled: true,
@@ -70,6 +73,9 @@ class _RegistrarState extends State<Registrar> {
             borderRadius: BorderRadius.circular(10),
           ),
         ),
+        onFieldSubmitted: (value) {
+          registrar();
+        },
         controller: emailController,
         validator: (value) {
           if (value == null ||
@@ -97,6 +103,9 @@ class _RegistrarState extends State<Registrar> {
             borderRadius: BorderRadius.circular(10),
           ),
         ),
+        onFieldSubmitted: (value) {
+          registrar();
+        },
         controller: celularController,
         validator: (value) {
           if (value == null ||
@@ -120,6 +129,9 @@ class _RegistrarState extends State<Registrar> {
             borderRadius: BorderRadius.circular(10),
           ),
         ),
+        onFieldSubmitted: (value) {
+          registrar();
+        },
         controller: senhaController,
         validator: (value) {
           if (value == null || value.isEmpty) {
@@ -143,6 +155,9 @@ class _RegistrarState extends State<Registrar> {
             borderRadius: BorderRadius.circular(10),
           ),
         ),
+        onFieldSubmitted: (value) {
+          registrar();
+        },
         controller: confirmarSenhaController,
         validator: (value) {
           if (value == null || value.isEmpty) {
@@ -166,14 +181,7 @@ class _RegistrarState extends State<Registrar> {
           child: IconButton(
             color: Colors.white,
             onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                futureRegistrar = RegistrarUsuarioService().registrar(
-                    nomeController.text,
-                        emailController.text,
-                        senhaController.text,
-                        celularController.text.replaceAll(RegExp(r"\D"), ""));
-                    setState(() {});
-                  }
+              registrar();
                 },
                 icon: const Icon(Icons.arrow_forward),
               ),
@@ -255,5 +263,16 @@ class _RegistrarState extends State<Registrar> {
         ),
       ),
     );
+  }
+
+  void registrar() {
+    if (_formKey.currentState!.validate()) {
+      futureRegistrar = RegistrarUsuarioService().registrar(
+          nomeController.text,
+          emailController.text,
+          senhaController.text,
+          celularController.text.replaceAll(RegExp(r"\D"), ""));
+      setState(() {});
+    }
   }
 }

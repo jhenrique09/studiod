@@ -26,6 +26,14 @@ class _LoginState extends State<Login> {
   TextEditingController emailController = TextEditingController();
   TextEditingController senhaController = TextEditingController();
 
+  void efetuarLogin(){
+    if (_formKey.currentState!.validate()) {
+      futureLogin = LoginService().validarLogin(
+          emailController.text, senhaController.text);
+      setState(() {});
+    }
+  }
+
   Widget loginContainer(BuildContext context) {
     return Column(children: [
       Container(
@@ -47,6 +55,9 @@ class _LoginState extends State<Login> {
               TextFormField(
                 keyboardType: TextInputType.emailAddress,
                 inputFormatters: [LowerCaseTextFormatter()],
+                onFieldSubmitted: (value) {
+                  efetuarLogin();
+                },
                 decoration: InputDecoration(
                   fillColor: Colors.grey.shade100,
                   filled: true,
@@ -69,6 +80,9 @@ class _LoginState extends State<Login> {
               TextFormField(
                 enableInteractiveSelection: true,
                 obscureText: true,
+                onFieldSubmitted: (value) {
+                  efetuarLogin();
+                },
                 decoration: InputDecoration(
                   fillColor: Colors.grey.shade100,
                   filled: true,
@@ -111,11 +125,7 @@ class _LoginState extends State<Login> {
                   child: IconButton(
                     color: Colors.white,
                     onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        futureLogin = LoginService().validarLogin(
-                            emailController.text, senhaController.text);
-                        setState(() {});
-                      }
+                      efetuarLogin();
                     },
                     icon: const Icon(Icons.arrow_forward),
                   ),

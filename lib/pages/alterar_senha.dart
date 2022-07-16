@@ -33,6 +33,15 @@ class _AlterarSenhaState extends PaginaInternaState<AlterarSenha> {
     novaSenhaFocus = FocusNode();
   }
 
+  void alterarSenha(){
+    if (_formKey.currentState!.validate()) {
+      futureAlterarSenha = AlterarSenhaService().atualizarSenha(
+          widget.senhaTemporaria ? null : senhaController.text,
+          novaSenhaController.text);
+      setState(() {});
+    }
+  }
+
   Widget alterarSenhaContainer(BuildContext context) {
     return Form(
         key: _formKey,
@@ -49,6 +58,9 @@ class _AlterarSenhaState extends PaginaInternaState<AlterarSenha> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
+                  onFieldSubmitted: (value) {
+                    alterarSenha();
+                  },
                   controller: senhaController,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -71,6 +83,9 @@ class _AlterarSenhaState extends PaginaInternaState<AlterarSenha> {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
+            onFieldSubmitted: (value) {
+              alterarSenha();
+            },
             controller: novaSenhaController,
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -93,6 +108,9 @@ class _AlterarSenhaState extends PaginaInternaState<AlterarSenha> {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
+            onFieldSubmitted: (value) {
+              alterarSenha();
+            },
             controller: confirmarNovaSenhaController,
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -126,12 +144,7 @@ class _AlterarSenhaState extends PaginaInternaState<AlterarSenha> {
               icon: const Icon(Icons.key),
               label: const Text('Alterar senha'),
               onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  futureAlterarSenha = AlterarSenhaService().atualizarSenha(
-                      widget.senhaTemporaria ? null : senhaController.text,
-                      novaSenhaController.text);
-                  setState(() {});
-                }
+                alterarSenha();
               },
             ),
           ]),
