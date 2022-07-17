@@ -103,6 +103,25 @@ class _ApiService implements ApiService {
   }
 
   @override
+  Future<List<Estabelecimento>> obterEstabelecimentos(authorization) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': authorization};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<List<dynamic>>(
+        _setStreamType<List<Estabelecimento>>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, '/estabelecimentos',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    var value = _result.data!
+        .map((dynamic i) => Estabelecimento.fromJson(i as Map<String, dynamic>))
+        .toList();
+    return value;
+  }
+
+  @override
   Future<List<Agendamento>> obterAgendamentos(authorization) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -122,20 +141,23 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<List<Estabelecimento>> obterEstabelecimentos(authorization) async {
+  Future<List<HorariosDisponiveisAgendamento>> obterHorariosDisponiveis(
+      authorization, idEstabelecimento) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'Authorization': authorization};
     _headers.removeWhere((k, v) => v == null);
     final _data = <String, dynamic>{};
     final _result = await _dio.fetch<List<dynamic>>(
-        _setStreamType<List<Estabelecimento>>(
+        _setStreamType<List<HorariosDisponiveisAgendamento>>(
             Options(method: 'GET', headers: _headers, extra: _extra)
-                .compose(_dio.options, '/estabelecimentos',
+                .compose(
+                    _dio.options, '/agendamentos/horarios/${idEstabelecimento}',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     var value = _result.data!
-        .map((dynamic i) => Estabelecimento.fromJson(i as Map<String, dynamic>))
+        .map((dynamic i) =>
+            HorariosDisponiveisAgendamento.fromJson(i as Map<String, dynamic>))
         .toList();
     return value;
   }

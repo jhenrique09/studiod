@@ -33,4 +33,29 @@ class AgendamentosService {
       });
     });
   }
+
+  Future<StatusResposta> obterHorariosDisponiveis(int idEstabelecimento) async {
+    return Future<StatusResposta>.delayed(const Duration(seconds: 1), () async {
+      if (!await verificarConexao()) {
+        return obterErroSemConexao(Acao.HORARIOS_DISPONIVEIS_AGENDAMENTO);
+      }
+      String? authorization = await LoginService().obterToken();
+      if (authorization == null) {
+        return Future<StatusResposta>.error(StatusResposta(
+            StatusRespostaCodigo.ERRO_TOKEN_NAO_DEFINIDO,
+            "",
+            Acao.HORARIOS_DISPONIVEIS_AGENDAMENTO));
+      }
+      return sl<ApiService>()
+          .obterHorariosDisponiveis(authorization, idEstabelecimento)
+          .then((value) async {
+        return StatusResposta(StatusRespostaCodigo.OK,
+            "Dados obtidos com sucesso.", Acao.HORARIOS_DISPONIVEIS_AGENDAMENTO,
+            retorno: value);
+      }).catchError((Object error) {
+        return obterStatusRespostaErro(
+            error, Acao.HORARIOS_DISPONIVEIS_AGENDAMENTO);
+      });
+    });
+  }
 }

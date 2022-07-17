@@ -7,6 +7,7 @@ import 'package:studiod/models/perfil.dart';
 import 'package:studiod/models/recuperar_senha.dart';
 
 import '../../models/alterar_senha.dart';
+import '../../models/horarios_disponiveis_agendamento.dart';
 import '../../models/registrar.dart';
 
 part 'api_service.g.dart';
@@ -34,11 +35,16 @@ abstract class ApiService {
       @Header("Authorization") String authorization,
       @Body() AlterarSenha atualizarSenha);
 
+  @GET("/estabelecimentos")
+  Future<List<Estabelecimento>> obterEstabelecimentos(
+      @Header("Authorization") String authorization);
+
   @GET("/agendamentos")
   Future<List<Agendamento>> obterAgendamentos(
       @Header("Authorization") String authorization);
 
-  @GET("/estabelecimentos")
-  Future<List<Estabelecimento>> obterEstabelecimentos(
-      @Header("Authorization") String authorization);
+  @GET("/agendamentos/horarios/{id_estabelecimento}")
+  Future<List<HorariosDisponiveisAgendamento>> obterHorariosDisponiveis(
+      @Header("Authorization") String authorization,
+      @Path("id_estabelecimento") int idEstabelecimento);
 }
