@@ -48,6 +48,8 @@ dependencies:
   flutter_spinkit: ^5.1.0
   internet_connection_checker: ^0.0.1+4
   shimmer: ^2.0.0
+  string_mask: ^1.0.0
+  url_launcher: ^6.1.5
 
 dev_dependencies:
   retrofit_generator: ^4.0.2

@@ -14,7 +14,7 @@ Agendamento _$AgendamentoFromJson(Map<String, dynamic> json) => Agendamento(
       estabelecimento: AgendamentoEstabelecimento.fromJson(
           json['estabelecimento'] as Map<String, dynamic>),
       servicos: (json['servicos'] as List<dynamic>)
-          .map((e) => AgendamentoServico.fromJson(e as Map<String, dynamic>))
+          .map((e) => Servico.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 

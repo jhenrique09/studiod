@@ -1,28 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:studiod/models/agendamento.dart';
-import 'package:studiod/services/meus_agendamentos_service.dart';
+import 'package:studiod/services/agendamentos_service.dart';
 import 'package:studiod/widgets/erro_ao_carregar.dart';
 import 'package:studiod/widgets/shimmer_loader.dart';
 
 import '../services/api/status_resposta.dart';
 import '../widgets/sem_conexao.dart';
 
-class MeusAgendamentos extends StatefulWidget {
-  const MeusAgendamentos({Key? key}) : super(key: key);
+class Agendamentos extends StatefulWidget {
+  const Agendamentos({Key? key}) : super(key: key);
 
   @override
-  State<MeusAgendamentos> createState() => _MeusAgendamentosState();
+  State<Agendamentos> createState() => _AgendamentosState();
 }
 
-class _MeusAgendamentosState extends State<MeusAgendamentos> {
-  Future<StatusResposta>? futureMeusAgendamentos;
+class _AgendamentosState extends State<Agendamentos> {
+  Future<StatusResposta>? futureAgendamentos;
   Logger logger = Logger();
 
   Future<void> atualizar() async {
     Future.microtask(() => setState(() {
-          futureMeusAgendamentos =
-              MeusAgendamentosService().obterMeusAgendamentos();
+          futureAgendamentos = AgendamentosService().obterAgendamentos();
         }));
   }
 
@@ -61,7 +60,7 @@ class _MeusAgendamentosState extends State<MeusAgendamentos> {
     return Padding(
         padding: const EdgeInsets.all(8),
         child: FutureBuilder<StatusResposta>(
-            future: futureMeusAgendamentos,
+            future: futureAgendamentos,
             builder:
                 (BuildContext context, AsyncSnapshot<StatusResposta> snapshot) {
               if (snapshot.connectionState == ConnectionState.none) {

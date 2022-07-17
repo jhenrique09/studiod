@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'meus_agendamentos.dart';
+import 'agendamentos.dart';
+import 'estabelecimentos.dart';
 import 'meus_dados.dart';
-import 'saloes.dart';
 
 class Principal extends StatefulWidget {
   const Principal({Key? key}) : super(key: key);
@@ -15,8 +15,8 @@ class _PrincipalState extends State<Principal> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = <Widget>[
-    MeusAgendamentos(),
-    Saloes(),
+    Agendamentos(),
+    Estabelecimentos(),
     MeusDados(),
   ];
 

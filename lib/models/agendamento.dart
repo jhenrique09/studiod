@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:studiod/models/agendamento_estabelecimento.dart';
 
-import 'agendamento_servico.dart';
+import 'servico.dart';
 
 part 'agendamento.g.dart';
 
@@ -12,7 +12,7 @@ class Agendamento {
   String hora;
   int status;
   AgendamentoEstabelecimento estabelecimento;
-  List<AgendamentoServico> servicos;
+  List<Servico> servicos;
 
   Agendamento(
       {required this.id,

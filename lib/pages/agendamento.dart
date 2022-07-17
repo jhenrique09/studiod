@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
+import 'package:studiod/models/estabelecimento.dart';
 import 'package:studiod/pages/pagina_interna.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Agendamento extends StatefulWidget {
-  const Agendamento({Key? key}) : super(key: key);
+  Estabelecimento estabelecimento;
+
+  Agendamento({Key? key, required this.estabelecimento}) : super(key: key);
 
   @override
   State<Agendamento> createState() => _AgendamentoState();
 }
 
 class _AgendamentoState extends PaginaInternaState<Agendamento> {
+  Logger logger = Logger();
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    Estabelecimento estabelecimento = widget.estabelecimento;
     return Scaffold(
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(48.0),
@@ -32,14 +39,13 @@ class _AgendamentoState extends PaginaInternaState<Agendamento> {
             padding: const EdgeInsets.only(top: 32),
             child: Column(
               children: [
-                const CircleAvatar(
+                CircleAvatar(
                     radius: 64,
-                    backgroundImage: NetworkImage(
-                        "https://belezaeart.com.br/wp-content/uploads/2019/05/14.jpeg")),
-                const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text("Salão exemplo",
-                        style: TextStyle(
+                    backgroundImage: NetworkImage(estabelecimento.url_imagem)),
+                Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(estabelecimento.nome,
+                        style: const TextStyle(
                           color: Color(0xff4c505b),
                           fontSize: 24,
                           fontWeight: FontWeight.w700,
@@ -47,15 +53,40 @@ class _AgendamentoState extends PaginaInternaState<Agendamento> {
                 Container(
                   alignment: Alignment.topCenter,
                   padding: const EdgeInsets.all(8),
-                  child: const Text(
-                    "Av. Fernandes Lima adasd as5\nFarol, Maceió - AL\n(82) 3024-4589",
-                    style: TextStyle(
+                  child: Text(
+                    estabelecimento.obterEnderecoCompleto(),
+                    style: const TextStyle(
                       color: Color(0xff4c505b),
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
                     ),
                     textAlign: TextAlign.center,
                   ),
+                ),
+                Container(
+                  alignment: Alignment.topCenter,
+                  padding: const EdgeInsets.all(8),
+                  child: InkWell(
+                      onTap: () async {
+                        Uri uri =
+                            Uri(scheme: 'tel', path: estabelecimento.telefone);
+                        canLaunchUrl(uri).then((bool result) {
+                          logger.d(result);
+                          if (result) {
+                            launchUrl(uri);
+                          }
+                        });
+                      },
+                      child: Text(
+                        estabelecimento.obterTelefoneFormatado(),
+                        style: const TextStyle(
+                          color: Color(0xff4c505b),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          decoration: TextDecoration.underline,
+                        ),
+                        textAlign: TextAlign.center,
+                      )),
                 )
               ],
             ),
