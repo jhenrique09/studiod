@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:studiod/pages/agendamento.dart';
 
 class Saloes extends StatelessWidget {
-  const Saloes({Key? key}) : super(key: key);
+  Saloes({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

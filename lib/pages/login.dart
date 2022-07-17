@@ -8,6 +8,7 @@ import 'package:studiod/pages/registrar.dart';
 import 'package:studiod/services/login_service.dart';
 import 'package:studiod/utils/lower_case_text_formatter.dart';
 import 'package:studiod/widgets/loader.dart';
+import 'package:studiod/widgets/sem_conexao.dart';
 
 import '../services/api/status_resposta.dart';
 
@@ -33,42 +34,6 @@ class _LoginState extends State<Login> {
             .validarLogin(emailController.text, senhaController.text);
       });
     }
-  }
-
-  Widget semConexaoContainer(
-      BuildContext context, VoidCallback? acaoTentarNovamente) {
-    return Container(
-        child: Column(
-      children: [
-        const Icon(
-          Icons.wifi_off,
-          size: 32.0,
-          semanticLabel: 'Text to announce in accessibility modes',
-        ),
-        const Text(
-          'Sem conexão com a internet',
-          style: TextStyle(
-            color: Color(0xff4c505b),
-            fontSize: 15,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        const Center(
-          child: Text(
-              'Não foi possivel carregar a página pois não existe sinal de rede. Verifique sua conexão e tente novamente.',
-              style: TextStyle(
-                color: Color(0xff4c505b),
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
-              textAlign: TextAlign.center),
-        ),
-        TextButton(
-          onPressed: acaoTentarNovamente,
-          child: Text("TENTAR NOVAMENTE"),
-        )
-      ],
-    ));
   }
 
   Widget loginContainer(BuildContext context) {
@@ -249,7 +214,7 @@ class _LoginState extends State<Login> {
                       if (resposta.codigo ==
                               StatusRespostaCodigo.ERRO_SEM_CONEXAO &&
                           resposta.acao == Acao.LOGIN_JWT) {
-                        return semConexaoContainer(context, () {
+                        return SemConexaoContainer(() {
                           setState(() {
                             futureLogin = LoginService().validarLoginAtual();
                           });

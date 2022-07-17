@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:studiod/models/agendamento.dart';
 import 'package:studiod/models/login.dart';
 import 'package:studiod/models/perfil.dart';
 import 'package:studiod/models/recuperar_senha.dart';
@@ -31,4 +32,8 @@ abstract class ApiService {
   Future<RespostaAlterarSenha> atualizarSenha(
       @Header("Authorization") String authorization,
       @Body() AlterarSenha atualizarSenha);
+
+  @GET("/agendamentos")
+  Future<List<Agendamento>> obterAgendamentos(
+      @Header("Authorization") String authorization);
 }

@@ -14,7 +14,7 @@ class Principal extends StatefulWidget {
 class _PrincipalState extends State<Principal> {
   int _selectedIndex = 0;
 
-  static const List<Widget> _pages = <Widget>[
+  final List<Widget> _pages = <Widget>[
     MeusAgendamentos(),
     Saloes(),
     MeusDados(),

@@ -5,8 +5,9 @@ class StatusResposta {
   StatusRespostaCodigo codigo = StatusRespostaCodigo.OK;
   String mensagem = "";
   Acao acao;
+  dynamic? retorno;
 
-  StatusResposta(this.codigo, this.mensagem, this.acao);
+  StatusResposta(this.codigo, this.mensagem, this.acao, {this.retorno});
 }
 
 enum StatusRespostaCodigo {
@@ -27,6 +28,7 @@ enum Acao {
   REGISTRAR,
   ALTERAR_SENHA,
   RECUPERAR_SENHA,
+  MEUS_AGENDAMENTOS,
 }
 
 class MensagensErro {
