@@ -12,14 +12,11 @@ String getApiBaseUrl() {
 }
 
 Future<bool> verificarConexao() async {
-  return Future<bool>.delayed(const Duration(seconds: 1), () async {
-    return await InternetConnectionChecker().hasConnection;
-  });
+  await Future.delayed(const Duration(seconds: 1));
+  return InternetConnectionChecker().hasConnection;
 }
 
 Future<StatusResposta> obterErroSemConexao(Acao acao) {
-  return Future<StatusResposta>.error(StatusResposta(
-      StatusRespostaCodigo.ERRO_SEM_CONEXAO,
-      MensagensErro.ERRO_SEM_CONEXAO,
-      acao));
+  return Future.error(StatusResposta(StatusRespostaCodigo.ERRO_SEM_CONEXAO,
+      MensagensErro.ERRO_SEM_CONEXAO, acao));
 }

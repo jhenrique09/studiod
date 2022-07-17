@@ -35,10 +35,11 @@ class _AlterarSenhaState extends PaginaInternaState<AlterarSenha> {
 
   void alterarSenha(){
     if (_formKey.currentState!.validate()) {
-      futureAlterarSenha = AlterarSenhaService().atualizarSenha(
-          widget.senhaTemporaria ? null : senhaController.text,
-          novaSenhaController.text);
-      setState(() {});
+      setState(() {
+        futureAlterarSenha = AlterarSenhaService().atualizarSenha(
+            widget.senhaTemporaria ? null : senhaController.text,
+            novaSenhaController.text);
+      });
     }
   }
 

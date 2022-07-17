@@ -28,9 +28,10 @@ class _LoginState extends State<Login> {
 
   void efetuarLogin() {
     if (_formKey.currentState!.validate()) {
-      futureLogin = LoginService()
-          .validarLogin(emailController.text, senhaController.text);
-      setState(() {});
+      setState(() {
+        futureLogin = LoginService()
+            .validarLogin(emailController.text, senhaController.text);
+      });
     }
   }
 
@@ -249,8 +250,9 @@ class _LoginState extends State<Login> {
                               StatusRespostaCodigo.ERRO_SEM_CONEXAO &&
                           resposta.acao == Acao.LOGIN_JWT) {
                         return semConexaoContainer(context, () {
-                          futureLogin = LoginService().validarLoginAtual();
-                          setState(() {});
+                          setState(() {
+                            futureLogin = LoginService().validarLoginAtual();
+                          });
                         });
                       }
                       senhaController.clear();
