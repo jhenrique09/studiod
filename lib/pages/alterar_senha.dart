@@ -33,7 +33,7 @@ class _AlterarSenhaState extends PaginaInternaState<AlterarSenha> {
     novaSenhaFocus = FocusNode();
   }
 
-  void alterarSenha(){
+  void alterarSenha() {
     if (_formKey.currentState!.validate()) {
       setState(() {
         futureAlterarSenha = AlterarSenhaService().atualizarSenha(

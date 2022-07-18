@@ -6,6 +6,7 @@ import 'package:studiod/widgets/erro_ao_carregar.dart';
 import 'package:studiod/widgets/shimmer_loader.dart';
 
 import '../services/api/status_resposta.dart';
+import '../widgets/erro_generico.dart';
 import '../widgets/sem_conexao.dart';
 
 class Agendamentos extends StatefulWidget {
@@ -26,6 +27,10 @@ class _AgendamentosState extends State<Agendamentos> {
   }
 
   Widget exibirAgendamentos(List<Agendamento> agendamentos) {
+    if (agendamentos.isEmpty) {
+      return ErroGenerico(
+          Icons.schedule, "Nenhum agendamento encontrado.", null);
+    }
     return RefreshIndicator(
         onRefresh: atualizar,
         child: ListView.builder(

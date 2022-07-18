@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../services/agendamentos_service.dart';
 import '../services/api/status_resposta.dart';
 import '../widgets/erro_ao_carregar.dart';
+import '../widgets/erro_generico.dart';
 import '../widgets/loader.dart';
 import '../widgets/sem_conexao.dart';
 
@@ -15,7 +16,11 @@ class Agendamento extends StatefulWidget {
   Estabelecimento estabelecimento;
   VoidCallback callbackEstabelecimento;
 
-  Agendamento({Key? key, required this.estabelecimento, required this.callbackEstabelecimento}) : super(key: key);
+  Agendamento(
+      {Key? key,
+      required this.estabelecimento,
+      required this.callbackEstabelecimento})
+      : super(key: key);
 
   @override
   State<Agendamento> createState() => _AgendamentoState();
@@ -76,7 +81,6 @@ class _AgendamentoState extends PaginaInternaState<Agendamento> {
                   Uri uri =
                       Uri(scheme: 'tel', path: widget.estabelecimento.telefone);
                   canLaunchUrl(uri).then((bool result) {
-                    logger.d(result);
                     if (result) {
                       launchUrl(uri);
                     }
@@ -100,8 +104,8 @@ class _AgendamentoState extends PaginaInternaState<Agendamento> {
 
   Widget formAgendamento(BuildContext context) {
     if (horariosDisponiveis.isEmpty) {
-      return exibirErro(context, Icons.schedule,
-          "Não existem horários disponiveis para agendamento.", false);
+      return ErroGenerico(Icons.schedule,
+          "Não existem horários disponiveis para agendamento.", null);
     }
     return Form(
         key: _formKey,
@@ -236,36 +240,6 @@ class _AgendamentoState extends PaginaInternaState<Agendamento> {
         }));
   }
 
-  Widget exibirErro(
-      BuildContext context, IconData icone, String erro, bool exibirAtualizar) {
-    return Center(
-        child: Column(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(
-          icone,
-          size: 32.0,
-        ),
-        Center(
-          child: Text(erro,
-              style: const TextStyle(
-                color: Color(0xff4c505b),
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
-              textAlign: TextAlign.center),
-        ),
-        Visibility(
-            visible: exibirAtualizar,
-            child: TextButton(
-              onPressed: atualizarHorarios,
-              child: Text("ATUALIZAR"),
-            ))
-      ],
-    ));
-  }
-
   Widget exibirLoader() {
     return Loader(mensagem: obterHorarios ? "Atualizando horários..." : null);
   }
@@ -293,16 +267,16 @@ class _AgendamentoState extends PaginaInternaState<Agendamento> {
                   future: futureAgendamento,
                   builder: (BuildContext context,
                       AsyncSnapshot<StatusResposta> snapshot) {
-                    if (forcarExibirForm){
+                    if (forcarExibirForm) {
                       forcarExibirForm = false;
                       return formAgendamento(context);
-                    }else if (snapshot.connectionState == ConnectionState.none) {
+                    } else if (snapshot.connectionState ==
+                        ConnectionState.none) {
                       if (widget.estabelecimento.servicos.isEmpty) {
-                        return exibirErro(
-                            context,
+                        return ErroGenerico(
                             Icons.error,
                             "Este estabelecimento ainda não possui serviços cadastrados.",
-                            false);
+                            null);
                       } else {
                         atualizarHorarios();
                         return exibirLoader();

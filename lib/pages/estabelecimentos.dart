@@ -7,11 +7,14 @@ import 'package:studiod/widgets/erro_ao_carregar.dart';
 import 'package:studiod/widgets/shimmer_loader.dart';
 
 import '../services/api/status_resposta.dart';
+import '../widgets/erro_generico.dart';
 import '../widgets/sem_conexao.dart';
 
 class Estabelecimentos extends StatefulWidget {
   VoidCallback callbackRecarregar;
-  Estabelecimentos({Key? key, required this.callbackRecarregar}) : super(key: key);
+
+  Estabelecimentos({Key? key, required this.callbackRecarregar})
+      : super(key: key);
 
   @override
   State<Estabelecimentos> createState() => _EstabelecimentosState();
@@ -29,6 +32,10 @@ class _EstabelecimentosState extends State<Estabelecimentos> {
   }
 
   Widget exibirEstabelecimentos(List<Estabelecimento> estabelecimentos) {
+    if (estabelecimentos.isEmpty) {
+      return ErroGenerico(
+          Icons.info, "Nenhum estabelecimento encontrado.", null);
+    }
     return RefreshIndicator(
         onRefresh: atualizar,
         child: ListView.builder(
@@ -43,8 +50,11 @@ class _EstabelecimentosState extends State<Estabelecimentos> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (_) => Agendamento(
-                                        estabelecimento:
-                                            estabelecimentos[index], callbackEstabelecimento: widget.callbackRecarregar,)))
+                                          estabelecimento:
+                                              estabelecimentos[index],
+                                          callbackEstabelecimento:
+                                              widget.callbackRecarregar,
+                                        )))
                           },
                       child: Card(
                           child: Padding(

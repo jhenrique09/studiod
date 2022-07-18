@@ -16,7 +16,7 @@ class _PrincipalState extends State<Principal> {
   int _selectedIndex = 0;
   Logger logger = Logger();
 
-  void reca(){
+  void reca() {
     logger.d("teste");
   }
 
@@ -41,7 +41,7 @@ class _PrincipalState extends State<Principal> {
 
   void _onItemTapped(int index, {bool recarregarAgendamentos = false}) {
     setState(() {
-      if (recarregarAgendamentos){
+      if (recarregarAgendamentos) {
         _pages.removeAt(index);
         _pages.insert(index, Agendamentos(key: UniqueKey()));
       }
@@ -50,8 +50,8 @@ class _PrincipalState extends State<Principal> {
     });
   }
 
-  void initPages(){
-    if (_pages.isEmpty){
+  void initPages() {
+    if (_pages.isEmpty) {
       _pages = <Widget>[
         Agendamentos(),
         Estabelecimentos(callbackRecarregar: () {

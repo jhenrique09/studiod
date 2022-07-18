@@ -24,6 +24,5 @@ class Loader extends StatelessWidget {
             ),
           )
         ]));
-    return const SpinKitRipple(color: Colors.pink, size: 96.0);
   }
 }

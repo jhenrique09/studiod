@@ -42,27 +42,27 @@ class _RecuperarSenhaState extends State<RecuperarSenha> {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-        controller: emailController,
-        validator: (value) {
-          if (value == null ||
-              value.isEmpty ||
-              !EmailValidator.validate(value)) {
-            return 'Por favor insira um email válido.';
-          }
-          return null;
-        },
-      ),
-      const SizedBox(
-        height: 40,
-      ),
-      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-        CircleAvatar(
-          radius: 30,
-          backgroundColor: const Color(0xff4c505b),
-          child: IconButton(
-            color: Colors.white,
-            onPressed: () {
-              recuperarSenha();
+            controller: emailController,
+            validator: (value) {
+              if (value == null ||
+                  value.isEmpty ||
+                  !EmailValidator.validate(value)) {
+                return 'Por favor insira um email válido.';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(
+            height: 40,
+          ),
+          Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+            CircleAvatar(
+              radius: 30,
+              backgroundColor: const Color(0xff4c505b),
+              child: IconButton(
+                color: Colors.white,
+                onPressed: () {
+                  recuperarSenha();
                 },
                 icon: const Icon(Icons.arrow_forward),
               ),
@@ -75,8 +75,7 @@ class _RecuperarSenhaState extends State<RecuperarSenha> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
-        return Future.value(
-            futureRecuperarSenha == null);
+        return Future.value(futureRecuperarSenha == null);
       },
       child: Scaffold(
         appBar: AppBar(
@@ -103,7 +102,7 @@ class _RecuperarSenhaState extends State<RecuperarSenha> {
               ),
             ),
             Container(
-                padding: const EdgeInsets.all(36),
+              padding: const EdgeInsets.all(36),
               child: FutureBuilder<StatusResposta>(
                 future: futureRecuperarSenha,
                 builder: (BuildContext context,
@@ -114,18 +113,16 @@ class _RecuperarSenhaState extends State<RecuperarSenha> {
                     if (snapshot.hasData) {
                       Future.microtask(() => Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(
-                                    builder: (_) => const Login()),
-                                (r) => false)
-                          );
-                          Future.microtask(() => ScaffoldMessenger.of(context)
-                                  .showSnackBar(const SnackBar(
-                                content: Text(
-                                    "Senha provisória enviada para o email cadastrado."),
-                                duration: Duration(seconds: 2),
-                              )));
-                          return Loader();
-                        } else if (snapshot.hasError) {
+                          MaterialPageRoute(builder: (_) => const Login()),
+                          (r) => false));
+                      Future.microtask(() => ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Text(
+                                "Senha provisória enviada para o email cadastrado."),
+                            duration: Duration(seconds: 2),
+                          )));
+                      return Loader();
+                    } else if (snapshot.hasError) {
                       StatusResposta resposta =
                           snapshot.error as StatusResposta;
                       Future.microtask(() => ScaffoldMessenger.of(context)

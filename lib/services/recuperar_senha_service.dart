@@ -8,7 +8,6 @@ import '../utils/utils.dart';
 GetIt sl = GetIt.instance;
 
 class RecuperarSenhaService {
-
   RecuperarSenhaService();
 
   Future<StatusResposta> recuperarSenha(String email) async {

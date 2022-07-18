@@ -70,7 +70,9 @@ class _LoginState extends State<Login> {
                 ),
                 controller: emailController,
                 validator: (value) {
-                  if (value == null || value.isEmpty || !EmailValidator.validate(value)) {
+                  if (value == null ||
+                      value.isEmpty ||
+                      !EmailValidator.validate(value)) {
                     return 'Por favor insira um email válido.';
                   }
                   return null;
@@ -107,8 +109,10 @@ class _LoginState extends State<Login> {
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 TextButton(
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => const RecuperarSenha()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const RecuperarSenha()));
                   },
                   child: const Text(
                     'Esqueceu a senha?',

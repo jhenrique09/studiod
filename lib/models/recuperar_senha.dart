@@ -19,9 +19,7 @@ class RespostaRecuperarSenha {
   int statusCode;
   String message;
 
-  RespostaRecuperarSenha(
-      {required this.statusCode,
-      required this.message});
+  RespostaRecuperarSenha({required this.statusCode, required this.message});
 
   factory RespostaRecuperarSenha.fromJson(Map<String, dynamic> json) =>
       _$RespostaRecuperarSenhaFromJson(json);

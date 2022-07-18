@@ -47,11 +47,12 @@ class Estabelecimento {
     return StringMask("#####-###").apply(cep);
   }
 
-  String obterEnderecoCompleto(){
-    String enderecoCompleto = "$endereco\n$bairro, $cidade - $uf\nCEP ${obterCepFormatado()}";
-    if (referencia!.isEmpty){
+  String obterEnderecoCompleto() {
+    String enderecoCompleto =
+        "$endereco\n$bairro, $cidade - $uf\nCEP ${obterCepFormatado()}";
+    if (referencia!.isEmpty) {
       return enderecoCompleto;
-    }else{
+    } else {
       return "$enderecoCompleto\n$referencia";
     }
   }
