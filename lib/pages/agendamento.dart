@@ -13,8 +13,9 @@ import '../widgets/sem_conexao.dart';
 
 class Agendamento extends StatefulWidget {
   Estabelecimento estabelecimento;
+  VoidCallback callbackEstabelecimento;
 
-  Agendamento({Key? key, required this.estabelecimento}) : super(key: key);
+  Agendamento({Key? key, required this.estabelecimento, required this.callbackEstabelecimento}) : super(key: key);
 
   @override
   State<Agendamento> createState() => _AgendamentoState();
@@ -318,6 +319,7 @@ class _AgendamentoState extends PaginaInternaState<Agendamento> {
                                 .showSnackBar(const SnackBar(
                               content: Text("Agendamento criado com sucesso."),
                             ));
+                            widget.callbackEstabelecimento.call();
                           });
                           return Loader();
                         }

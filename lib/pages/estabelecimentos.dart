@@ -10,7 +10,8 @@ import '../services/api/status_resposta.dart';
 import '../widgets/sem_conexao.dart';
 
 class Estabelecimentos extends StatefulWidget {
-  const Estabelecimentos({Key? key}) : super(key: key);
+  VoidCallback callbackRecarregar;
+  Estabelecimentos({Key? key, required this.callbackRecarregar}) : super(key: key);
 
   @override
   State<Estabelecimentos> createState() => _EstabelecimentosState();
@@ -43,7 +44,7 @@ class _EstabelecimentosState extends State<Estabelecimentos> {
                                 MaterialPageRoute(
                                     builder: (_) => Agendamento(
                                         estabelecimento:
-                                            estabelecimentos[index])))
+                                            estabelecimentos[index], callbackEstabelecimento: widget.callbackRecarregar,)))
                           },
                       child: Card(
                           child: Padding(

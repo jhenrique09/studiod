@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 import 'agendamentos.dart';
 import 'estabelecimentos.dart';
@@ -13,12 +14,13 @@ class Principal extends StatefulWidget {
 
 class _PrincipalState extends State<Principal> {
   int _selectedIndex = 0;
+  Logger logger = Logger();
 
-  final List<Widget> _pages = <Widget>[
-    Agendamentos(),
-    Estabelecimentos(),
-    MeusDados(),
-  ];
+  void reca(){
+    logger.d("teste");
+  }
+
+  List<Widget> _pages = [];
 
   static const List<BottomNavigationBarItem> menuItems = [
     BottomNavigationBarItem(
@@ -37,15 +39,32 @@ class _PrincipalState extends State<Principal> {
 
   String _appBarTitle = 'Agendamentos';
 
-  void _onItemTapped(int index) {
+  void _onItemTapped(int index, {bool recarregarAgendamentos = false}) {
     setState(() {
+      if (recarregarAgendamentos){
+        _pages.removeAt(index);
+        _pages.insert(index, Agendamentos(key: UniqueKey()));
+      }
       _appBarTitle = menuItems[index].label!;
       _selectedIndex = index;
     });
   }
 
+  void initPages(){
+    if (_pages.isEmpty){
+      _pages = <Widget>[
+        Agendamentos(),
+        Estabelecimentos(callbackRecarregar: () {
+          _onItemTapped(0, recarregarAgendamentos: true);
+        }),
+        MeusDados(),
+      ];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    initPages();
     return Scaffold(
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(48.0),
