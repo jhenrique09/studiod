@@ -22,12 +22,18 @@ class Agendamento extends StatefulWidget {
 
 class _AgendamentoState extends PaginaInternaState<Agendamento> {
   Logger logger = Logger();
-  Future<StatusResposta>? futureHorarios;
-  final GlobalKey<FormFieldState> _horaDropdownKey =
-      GlobalKey<FormFieldState>();
+  Future<StatusResposta>? futureAgendamento;
+  List<HorariosDisponiveisAgendamento> horariosDisponiveis = [];
   String? dataSelecionada;
   String? horaSelecionada;
   int? servicoSelecionado;
+  bool obterHorarios = false;
+
+  final GlobalKey<FormFieldState> _horaDropdownKey =
+      GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> _dataDropdownKey =
+      GlobalKey<FormFieldState>();
+
   final _formKey = GlobalKey<FormState>();
 
   Widget detalhesEstabelecimento() {
@@ -90,8 +96,7 @@ class _AgendamentoState extends PaginaInternaState<Agendamento> {
     );
   }
 
-  Widget detalhesAgendar(BuildContext context,
-      List<HorariosDisponiveisAgendamento> horariosDisponiveis) {
+  Widget detalhesAgendar(BuildContext context) {
     if (horariosDisponiveis.isEmpty) {
       return exibirErro(context, Icons.schedule,
           "Não existem horários disponiveis para agendamento.", false);
@@ -100,8 +105,9 @@ class _AgendamentoState extends PaginaInternaState<Agendamento> {
         key: _formKey,
         child: Column(children: [
           DropdownButtonFormField(
-              onChanged: (val) {},
-              value: servicoSelecionado,
+              onChanged: (val) {
+                servicoSelecionado = int.tryParse(val.toString());
+              },
               decoration: InputDecoration(
                 fillColor: Colors.grey.shade100,
                 filled: true,
@@ -134,7 +140,7 @@ class _AgendamentoState extends PaginaInternaState<Agendamento> {
                   _horaDropdownKey.currentState?.reset();
                 });
               },
-              value: dataSelecionada,
+              key: _dataDropdownKey,
               decoration: InputDecoration(
                 fillColor: Colors.grey.shade100,
                 filled: true,
@@ -155,13 +161,17 @@ class _AgendamentoState extends PaginaInternaState<Agendamento> {
                         child: Text(h.data),
                       ))
                   .toList()),
-          if (dataSelecionada != null) ...[
+          if (dataSelecionada != null &&
+              horariosDisponiveis
+                  .where((h) => h.data == dataSelecionada)
+                  .isNotEmpty) ...[
             const SizedBox(
               height: 30,
             ),
             DropdownButtonFormField(
-                onChanged: (val) {},
-                value: horaSelecionada,
+                onChanged: (val) {
+                  horaSelecionada = val.toString();
+                },
                 key: _horaDropdownKey,
                 decoration: InputDecoration(
                   fillColor: Colors.grey.shade100,
@@ -201,7 +211,13 @@ class _AgendamentoState extends PaginaInternaState<Agendamento> {
               label: const Text('Agendar'),
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  // TODO
+                  setState(() {
+                    futureAgendamento = AgendamentosService().criarAgendamento(
+                        widget.estabelecimento.id,
+                        dataSelecionada!,
+                        horaSelecionada!,
+                        [servicoSelecionado!]);
+                  });
                 }
               },
             ),
@@ -209,9 +225,10 @@ class _AgendamentoState extends PaginaInternaState<Agendamento> {
         ]));
   }
 
-  Future<void> atualizar() async {
+  Future<void> atualizarHorarios() async {
+    obterHorarios = true;
     Future.microtask(() => setState(() {
-          futureHorarios = AgendamentosService()
+          futureAgendamento = AgendamentosService()
               .obterHorariosDisponiveis(widget.estabelecimento.id);
         }));
   }
@@ -239,11 +256,15 @@ class _AgendamentoState extends PaginaInternaState<Agendamento> {
         Visibility(
             visible: exibirAtualizar,
             child: TextButton(
-              onPressed: atualizar,
+              onPressed: atualizarHorarios,
               child: Text("ATUALIZAR"),
             ))
       ],
     ));
+  }
+
+  Widget exibirLoader() {
+    return Loader(mensagem: obterHorarios ? "Atualizando horários..." : null);
   }
 
   @override
@@ -266,7 +287,7 @@ class _AgendamentoState extends PaginaInternaState<Agendamento> {
           Padding(
               padding: const EdgeInsets.all(36),
               child: FutureBuilder<StatusResposta>(
-                  future: futureHorarios,
+                  future: futureAgendamento,
                   builder: (BuildContext context,
                       AsyncSnapshot<StatusResposta> snapshot) {
                     if (snapshot.connectionState == ConnectionState.none) {
@@ -277,34 +298,58 @@ class _AgendamentoState extends PaginaInternaState<Agendamento> {
                             "Este estabelecimento ainda não possui serviços cadastrados.",
                             false);
                       } else {
-                        atualizar();
-                        return Loader(mensagem: "Atualizando horários...");
+                        atualizarHorarios();
+                        return exibirLoader();
                       }
                     } else if (snapshot.connectionState ==
                         ConnectionState.waiting) {
-                      return Loader(mensagem: "Atualizando horários...");
+                      return exibirLoader();
                     } else {
+                      obterHorarios = false;
                       if (snapshot.hasData) {
-                        return detalhesAgendar(
-                            context,
-                            snapshot.data?.retorno
-                                as List<HorariosDisponiveisAgendamento>);
+                        if (snapshot.data?.acao == Acao.OBTER_HORARIOS) {
+                          horariosDisponiveis = snapshot.data?.retorno
+                              as List<HorariosDisponiveisAgendamento>;
+                          return detalhesAgendar(context);
+                        } else {
+                          Future.microtask(() {
+                            Navigator.of(context).pop();
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                              content: Text("Agendamento criado com sucesso."),
+                            ));
+                          });
+                          return Loader();
+                        }
                       } else {
                         StatusResposta resposta =
                             snapshot.error as StatusResposta;
-                        if (resposta.codigo ==
-                            StatusRespostaCodigo.ERRO_SEM_CONEXAO) {
-                          return SemConexaoContainer(() {
-                            setState(() {
-                              atualizar();
+                        if (resposta.acao == Acao.OBTER_HORARIOS) {
+                          if (resposta.codigo ==
+                              StatusRespostaCodigo.ERRO_SEM_CONEXAO) {
+                            return SemConexaoContainer(() {
+                              setState(() {
+                                atualizarHorarios();
+                              });
                             });
-                          });
+                          } else {
+                            return ErroAoCarregarContainer(() {
+                              setState(() {
+                                atualizarHorarios();
+                              });
+                            });
+                          }
                         } else {
-                          return ErroAoCarregarContainer(() {
+                          _dataDropdownKey.currentState?.reset();
+                          _horaDropdownKey.currentState?.reset();
+                          Future.microtask(() {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(resposta.mensagem)));
                             setState(() {
-                              atualizar();
+                              atualizarHorarios();
                             });
                           });
+                          return Loader();
                         }
                       }
                     }

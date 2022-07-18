@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:studiod/models/agendamento.dart';
+import 'package:studiod/models/criar_agendamento.dart';
 import 'package:studiod/models/estabelecimento.dart';
 import 'package:studiod/models/login.dart';
 import 'package:studiod/models/perfil.dart';
@@ -47,4 +48,9 @@ abstract class ApiService {
   Future<List<HorariosDisponiveisAgendamento>> obterHorariosDisponiveis(
       @Header("Authorization") String authorization,
       @Path("id_estabelecimento") int idEstabelecimento);
+
+  @POST("/agendamentos")
+  Future<RespostaCriarAgendamento> criarAgendamento(
+      @Header("Authorization") String authorization,
+      @Body() CriarAgendamento criarAgendamento);
 }

@@ -211,7 +211,6 @@ class _AlterarSenhaState extends PaginaInternaState<AlterarSenha> {
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(const SnackBar(
                               content: Text("Senha atualizada com sucesso."),
-                              duration: Duration(seconds: 2),
                             ));
                           });
                           return Loader();

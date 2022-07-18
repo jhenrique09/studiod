@@ -189,7 +189,6 @@ class _LoginState extends State<Login> {
                               .showSnackBar(const SnackBar(
                             content: Text(
                                 "É necessário alterar a senha para acessar o aplicativo."),
-                            duration: Duration(seconds: 4),
                           ));
                         });
                         Future.microtask(() => Navigator.pushAndRemoveUntil(
