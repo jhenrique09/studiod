@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:multi_select_flutter/bottom_sheet/multi_select_bottom_sheet_field.dart';
+import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
+import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import 'package:studiod/models/estabelecimento.dart';
 import 'package:studiod/models/horarios_disponiveis_agendamento.dart';
 import 'package:studiod/pages/pagina_interna.dart';
@@ -32,9 +36,10 @@ class _AgendamentoState extends PaginaInternaState<Agendamento> {
   List<HorariosDisponiveisAgendamento> horariosDisponiveis = [];
   String? dataSelecionada;
   String? horaSelecionada;
-  int? servicoSelecionado;
+  List<dynamic> servicosSelecionados = [];
   bool obterHorarios = false;
   bool forcarExibirForm = false;
+  final _servicosKey = GlobalKey<FormFieldState>();
 
   final GlobalKey<FormFieldState> _horaDropdownKey =
       GlobalKey<FormFieldState>();
@@ -110,30 +115,50 @@ class _AgendamentoState extends PaginaInternaState<Agendamento> {
     return Form(
         key: _formKey,
         child: Column(children: [
-          DropdownButtonFormField(
-              onChanged: (val) {
-                servicoSelecionado = int.tryParse(val.toString());
+          MultiSelectBottomSheetField(
+              key: _servicosKey,
+              onConfirm: (results) {
+                servicosSelecionados = results;
               },
-              decoration: InputDecoration(
-                fillColor: Colors.grey.shade100,
-                filled: true,
-                hintText: 'Serviço',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
+              searchable: true,
+              initialChildSize: 0.7,
+              maxChildSize: 0.95,
+              confirmText: Text("Salvar"),
+              cancelText: Text("Cancelar"),
+              buttonIcon: Icon(
+                Icons.arrow_drop_down,
+                color: Colors.grey.shade700,
+              ),
+              title: const Text("Escolher Serviços",
+                  style: TextStyle(fontSize: 14)),
+              buttonText: Text("Serviços",
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey.shade700)),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey, width: 1.8),
+                borderRadius: BorderRadius.circular(10),
               ),
               validator: (value) {
-                if (value == null) {
+                if (value == null || value.isEmpty) {
                   return 'Selecione um serviço.';
                 }
                 return null;
               },
+              listType: MultiSelectListType.CHIP,
+              chipDisplay: MultiSelectChipDisplay(
+                onTap: (s) {
+                  setState(() {
+                    forcarExibirForm = true;
+                    servicosSelecionados.remove(s);
+                  });
+                },
+              ),
               items: widget.estabelecimento.servicos
-                  .map<DropdownMenuItem<String>>(
-                      (s) => DropdownMenuItem<String>(
-                            value: s.id.toString(),
-                            child: Text(s.nome),
-                          ))
+                  .map(
+                    (s) => MultiSelectItem<String>(s.id.toString(), s.nome),
+                  )
                   .toList()),
           const SizedBox(
             height: 30,
@@ -149,9 +174,15 @@ class _AgendamentoState extends PaginaInternaState<Agendamento> {
               },
               key: _dataDropdownKey,
               decoration: InputDecoration(
+                contentPadding: const EdgeInsets.all(10),
                 fillColor: Colors.grey.shade100,
                 filled: true,
                 hintText: 'Data do serviço',
+                hintStyle: const TextStyle(fontSize: 14),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.grey, width: 1.8),
+                  borderRadius: BorderRadius.circular(10),
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -181,9 +212,17 @@ class _AgendamentoState extends PaginaInternaState<Agendamento> {
                 },
                 key: _horaDropdownKey,
                 decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(10),
                   fillColor: Colors.grey.shade100,
                   filled: true,
                   hintText: 'Hora do serviço',
+                  hintStyle: const TextStyle(fontSize: 14),
+                  enabledBorder: OutlineInputBorder(
+                    // width: 0.0 produces a thin "hairline" border
+                    borderSide:
+                        const BorderSide(color: Colors.grey, width: 1.8),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -223,7 +262,7 @@ class _AgendamentoState extends PaginaInternaState<Agendamento> {
                         widget.estabelecimento.id,
                         dataSelecionada!,
                         horaSelecionada!,
-                        [servicoSelecionado!]);
+                        servicosSelecionados.map((e) => int.parse(e)).toList());
                   });
                 }
               },
@@ -246,105 +285,114 @@ class _AgendamentoState extends PaginaInternaState<Agendamento> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(48.0),
-          child: AppBar(
-            leading: IconButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                icon: const Icon(Icons.arrow_back)),
-            title: const Text("Agendamento"),
-            elevation: 1,
-          )),
-      body: SingleChildScrollView(
-        child: Column(children: [
-          detalhesEstabelecimento(),
-          Padding(
-              padding: const EdgeInsets.all(36),
-              child: FutureBuilder<StatusResposta>(
-                  future: futureAgendamento,
-                  builder: (BuildContext context,
-                      AsyncSnapshot<StatusResposta> snapshot) {
-                    if (forcarExibirForm) {
-                      forcarExibirForm = false;
-                      return formAgendamento(context);
-                    } else if (snapshot.connectionState ==
-                        ConnectionState.none) {
-                      if (widget.estabelecimento.servicos.isEmpty) {
-                        return ErroGenerico(
-                            Icons.error,
-                            "Este estabelecimento ainda não possui serviços cadastrados.",
-                            null);
-                      } else {
-                        atualizarHorarios();
-                        return exibirLoader();
+    return WillPopScope(
+        onWillPop: () {
+          return Future.value(futureAgendamento == null);
+        },
+        child: Scaffold(
+          appBar: PreferredSize(
+              preferredSize: const Size.fromHeight(48.0),
+              child: AppBar(
+                leading: IconButton(
+                    onPressed: () {
+                      if (futureAgendamento == null) {
+                        Navigator.of(context).pop();
                       }
-                    } else if (snapshot.connectionState ==
-                        ConnectionState.waiting) {
-                      return exibirLoader();
-                    } else {
-                      obterHorarios = false;
-                      if (snapshot.hasData) {
-                        if (snapshot.data?.acao == Acao.OBTER_HORARIOS) {
-                          horariosDisponiveis = snapshot.data?.retorno
-                              as List<HorariosDisponiveisAgendamento>;
+                    },
+                    icon: const Icon(Icons.arrow_back)),
+                title: const Text("Agendamento"),
+                elevation: 1,
+              )),
+          body: SingleChildScrollView(
+            child: Column(children: [
+              detalhesEstabelecimento(),
+              Padding(
+                  padding: const EdgeInsets.all(36),
+                  child: FutureBuilder<StatusResposta>(
+                      future: futureAgendamento,
+                      builder: (BuildContext context,
+                          AsyncSnapshot<StatusResposta> snapshot) {
+                        if (forcarExibirForm) {
+                          forcarExibirForm = false;
                           return formAgendamento(context);
-                        } else {
-                          Future.microtask(() {
-                            Navigator.of(context).pop();
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(
-                              content: Text("Agendamento criado com sucesso."),
-                            ));
-                            widget.callbackEstabelecimento.call();
-                          });
-                          return Loader();
-                        }
-                      } else {
-                        StatusResposta resposta =
-                            snapshot.error as StatusResposta;
-                        if (resposta.acao == Acao.OBTER_HORARIOS) {
-                          if (resposta.codigo ==
-                              StatusRespostaCodigo.ERRO_SEM_CONEXAO) {
-                            return SemConexaoContainer(() {
-                              setState(() {
-                                atualizarHorarios();
-                              });
-                            });
+                        } else if (snapshot.connectionState ==
+                            ConnectionState.none) {
+                          if (widget.estabelecimento.servicos.isEmpty) {
+                            return ErroGenerico(
+                                Icons.error,
+                                "Este estabelecimento ainda não possui serviços cadastrados.",
+                                null);
                           } else {
-                            return ErroAoCarregarContainer(() {
-                              setState(() {
-                                atualizarHorarios();
-                              });
-                            });
+                            atualizarHorarios();
+                            return exibirLoader();
                           }
+                        } else if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return exibirLoader();
                         } else {
-                          _dataDropdownKey.currentState?.reset();
-                          _horaDropdownKey.currentState?.reset();
-                          if (resposta.codigo ==
-                              StatusRespostaCodigo.ERRO_SEM_CONEXAO) {
-                            Future.microtask(() {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(resposta.mensagem)));
-                            });
-                            return formAgendamento(context);
+                          futureAgendamento = null;
+                          obterHorarios = false;
+                          if (snapshot.hasData) {
+                            if (snapshot.data?.acao == Acao.OBTER_HORARIOS) {
+                              horariosDisponiveis = snapshot.data?.retorno
+                                  as List<HorariosDisponiveisAgendamento>;
+                              return formAgendamento(context);
+                            } else {
+                              Future.microtask(() {
+                                Navigator.of(context).pop();
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                  content:
+                                      Text("Agendamento criado com sucesso."),
+                                ));
+                                widget.callbackEstabelecimento.call();
+                              });
+                              return Loader();
+                            }
+                          } else {
+                            StatusResposta resposta =
+                                snapshot.error as StatusResposta;
+                            if (resposta.acao == Acao.OBTER_HORARIOS) {
+                              if (resposta.codigo ==
+                                  StatusRespostaCodigo.ERRO_SEM_CONEXAO) {
+                                return SemConexaoContainer(() {
+                                  setState(() {
+                                    atualizarHorarios();
+                                  });
+                                });
+                              } else {
+                                return ErroAoCarregarContainer(() {
+                                  setState(() {
+                                    atualizarHorarios();
+                                  });
+                                });
+                              }
+                            } else {
+                              _dataDropdownKey.currentState?.reset();
+                              _horaDropdownKey.currentState?.reset();
+                              if (resposta.codigo ==
+                                  StatusRespostaCodigo.ERRO_SEM_CONEXAO) {
+                                Future.microtask(() {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(resposta.mensagem)));
+                                });
+                                return formAgendamento(context);
+                              }
+                              Future.microtask(() {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(resposta.mensagem)));
+                                setState(() {
+                                  atualizarHorarios();
+                                });
+                              });
+                              return Loader();
+                            }
                           }
-                          Future.microtask(() {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(resposta.mensagem)));
-                            setState(() {
-                              atualizarHorarios();
-                            });
-                          });
-                          return Loader();
                         }
-                      }
-                    }
-                  }))
-        ]),
-      ),
-    );
+                      }))
+            ]),
+          ),
+        ));
   }
 }

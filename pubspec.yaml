@@ -50,6 +50,7 @@ dependencies:
   shimmer: ^2.0.0
   string_mask: ^1.0.0
   url_launcher: ^6.1.5
+  multi_select_flutter: ^4.1.2
 
 dev_dependencies:
   retrofit_generator: ^4.0.2
