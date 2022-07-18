@@ -29,6 +29,7 @@ class _AgendamentoState extends PaginaInternaState<Agendamento> {
   String? horaSelecionada;
   int? servicoSelecionado;
   bool obterHorarios = false;
+  bool forcarExibirForm = false;
 
   final GlobalKey<FormFieldState> _horaDropdownKey =
       GlobalKey<FormFieldState>();
@@ -97,7 +98,7 @@ class _AgendamentoState extends PaginaInternaState<Agendamento> {
     );
   }
 
-  Widget detalhesAgendar(BuildContext context) {
+  Widget formAgendamento(BuildContext context) {
     if (horariosDisponiveis.isEmpty) {
       return exibirErro(context, Icons.schedule,
           "Não existem horários disponiveis para agendamento.", false);
@@ -139,6 +140,7 @@ class _AgendamentoState extends PaginaInternaState<Agendamento> {
                   horaSelecionada = null;
                   dataSelecionada = val.toString();
                   _horaDropdownKey.currentState?.reset();
+                  forcarExibirForm = true;
                 });
               },
               key: _dataDropdownKey,
@@ -291,7 +293,10 @@ class _AgendamentoState extends PaginaInternaState<Agendamento> {
                   future: futureAgendamento,
                   builder: (BuildContext context,
                       AsyncSnapshot<StatusResposta> snapshot) {
-                    if (snapshot.connectionState == ConnectionState.none) {
+                    if (forcarExibirForm){
+                      forcarExibirForm = false;
+                      return formAgendamento(context);
+                    }else if (snapshot.connectionState == ConnectionState.none) {
                       if (widget.estabelecimento.servicos.isEmpty) {
                         return exibirErro(
                             context,
@@ -311,7 +316,7 @@ class _AgendamentoState extends PaginaInternaState<Agendamento> {
                         if (snapshot.data?.acao == Acao.OBTER_HORARIOS) {
                           horariosDisponiveis = snapshot.data?.retorno
                               as List<HorariosDisponiveisAgendamento>;
-                          return detalhesAgendar(context);
+                          return formAgendamento(context);
                         } else {
                           Future.microtask(() {
                             Navigator.of(context).pop();
@@ -344,6 +349,14 @@ class _AgendamentoState extends PaginaInternaState<Agendamento> {
                         } else {
                           _dataDropdownKey.currentState?.reset();
                           _horaDropdownKey.currentState?.reset();
+                          if (resposta.codigo ==
+                              StatusRespostaCodigo.ERRO_SEM_CONEXAO) {
+                            Future.microtask(() {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(resposta.mensagem)));
+                            });
+                            return formAgendamento(context);
+                          }
                           Future.microtask(() {
                             ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(content: Text(resposta.mensagem)));
