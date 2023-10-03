@@ -7,7 +7,7 @@ String getApiBaseUrl() {
   if (kDebugMode) {
     return "http://10.9.9.11:3000/v1/";
   } else {
-    return "https://api-studiod.jhenrique09.me/v1/";
+    return "https://api-studiod.pixelexperience.org/v1/";
   }
 }
 
